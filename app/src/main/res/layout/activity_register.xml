@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Logo & Title -->
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_app_logo" />
+
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="GYM TRACK"
+            android:textColor="@color/orange_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSessionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Sesión de registro"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- Stepper Indicator -->
+        <LinearLayout
+            android:id="@+id/llStepper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvStep1Circle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/step_circle_active"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="2dp"
+                android:background="@color/text_hint"
+                android:layout_marginHorizontal="8dp" />
+
+            <TextView
+                android:id="@+id/tvStep2Circle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/step_circle_inactive"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="2dp"
+                android:background="@color/text_hint"
+                android:layout_marginHorizontal="8dp" />
+
+            <TextView
+                android:id="@+id/tvStep3Circle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/step_circle_inactive"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- ViewFlipper to switch steps -->
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- STEP 1: Personal Info (Vertical Layout) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su nombre"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="ej: Juan"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su dirección"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="Ej: Calle 123"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su edad"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="ej: 18"
+                    android:inputType="number"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su correo"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="tu@email.com"
+                    android:inputType="textEmailAddress"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Seleccione su EPS"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <Spinner
+                    android:id="@+id/spinnerEPS"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su contraseña"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="********"
+                    android:inputType="textPassword"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese su número de contacto"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="Ej: 312..."
+                    android:inputType="phone"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ingrese número de familiar"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etFamilyPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="Ej: 315..."
+                    android:inputType="phone"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="24dp" />
+
+            </LinearLayout>
+
+            <!-- STEP 2: Physical Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!-- Keep existing fields from previous analysis but in blue style -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Peso (kg)"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etWeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="Ej: 70"
+                    android:inputType="numberDecimal"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Estatura (cm)"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etHeight"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="Ej: 175"
+                    android:inputType="number"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sexo"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <Spinner
+                    android:id="@+id/spinnerSex"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:layout_marginBottom="20dp" />
+            </LinearLayout>
+
+            <!-- STEP 3: Goals -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Objetivo principal"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <Spinner
+                    android:id="@+id/spinnerGoal"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:layout_marginBottom="16dp" />
+
+                <CheckBox
+                    android:id="@+id/cbDataTreatment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Acepto el tratamiento de datos"
+                    android:textColor="@color/white"
+                    android:buttonTint="@color/orange_primary"
+                    android:layout_marginBottom="24dp" />
+            </LinearLayout>
+        </ViewFlipper>
+
+        <!-- Navigation Buttons -->
+        <LinearLayout
+            android:id="@+id/llNavButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnBack"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/edittext_bg"
+                android:text="Regresar"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnContinue"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_gradient"
+                android:text="Continuar"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvGoToLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text="¿Ya tienes cuenta? Inicia sesión"
+            android:textColor="@color/orange_primary"
+            android:paddingBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>
