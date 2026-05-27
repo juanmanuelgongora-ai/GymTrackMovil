@@ -14,9 +14,45 @@ public class ApiClient {
 
         if (retrofit == null || !currentIp.equals(ip)) {
             currentIp = ip;
-            String baseUrl = "http://" + ip + "/api/";
+            String baseUrl = ip;
+
+            if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+
+                if (baseUrl.contains("10.0.2.2") || baseUrl.contains("192.168.") ||
+                        baseUrl.contains("localhost") || baseUrl.contains(":8000")) {
+                    baseUrl = "http://" + baseUrl;
+                } else {
+
+                    baseUrl = "https://" + baseUrl;
+                }
+            }
+
+            if (!baseUrl.endsWith("/")) {
+                baseUrl = baseUrl + "/";
+            }
+
+            if (!baseUrl.endsWith("api/")) {
+                baseUrl = baseUrl + "api/";
+            }
+
+            okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
+                    .addInterceptor(new okhttp3.Interceptor() {
+                        @Override
+                        public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain) throws java.io.IOException {
+                            okhttp3.Request original = chain.request();
+                            okhttp3.Request request = original.newBuilder()
+                                    .header("Accept", "application/json")
+                                    .header("Content-Type", "application/json")
+                                    .method(original.method(), original.body())
+                                    .build();
+                            return chain.proceed(request);
+                        }
+                    })
+                    .build();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
+                    .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
