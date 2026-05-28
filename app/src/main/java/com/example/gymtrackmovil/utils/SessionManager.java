@@ -9,7 +9,7 @@ public class SessionManager {
     private static final String KEY_EMAIL = "userEmail";
     private static final String KEY_NAME = "userName";
     private static final String KEY_SERVER_IP = "serverIp";
-    private static final String DEFAULT_IP = "10.0.2.2:8000"; // Android Emulator default to host loopback
+    private static final String DEFAULT_IP = "gymtrack.site"; // Producción por defecto en Hostinger
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -19,6 +19,13 @@ public class SessionManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
+
+        // Auto-actualizar IP local previa a producción
+        String currentSavedIp = pref.getString(KEY_SERVER_IP, "");
+        if (currentSavedIp.isEmpty() || "10.0.2.2:8000".equals(currentSavedIp)) {
+            editor.putString(KEY_SERVER_IP, "gymtrack.site");
+            editor.commit();
+        }
     }
 
     public void createLoginSession(String email, String name) {
