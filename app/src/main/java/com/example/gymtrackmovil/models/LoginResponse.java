@@ -13,7 +13,10 @@ public class LoginResponse {
     }
 
     public static class User {
+        @com.google.gson.annotations.SerializedName("nombre")
         private String name;
+
+        @com.google.gson.annotations.SerializedName("email")
         private String email;
 
         public String getName() {

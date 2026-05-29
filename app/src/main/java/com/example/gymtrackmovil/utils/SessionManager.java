@@ -43,6 +43,10 @@ public class SessionManager {
         return pref.getString(KEY_EMAIL, null);
     }
 
+    public String getUserName() {
+        return pref.getString(KEY_NAME, "Usuario");
+    }
+
     public void updateServerIp(String ip) {
         editor.putString(KEY_SERVER_IP, ip);
         editor.commit();
