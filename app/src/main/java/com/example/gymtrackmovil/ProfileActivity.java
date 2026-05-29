@@ -31,7 +31,6 @@ public class ProfileActivity extends AppCompatActivity {
             tvEmail.setText("");
         }
 
-        // Logout logic
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
             sessionManager.logoutUser();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -40,7 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
-        // Navigation
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();

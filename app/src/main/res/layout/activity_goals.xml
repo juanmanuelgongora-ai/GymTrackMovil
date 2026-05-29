@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Mis Objetivos"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivBack"
+            app:layout_constraintStart_toEndOf="@id/ivBack"
+            app:layout_constraintTop_toTopOf="@id/ivBack" />
+
+        <TextView
+            android:id="@+id/tvUserInitials"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/step_circle_active"
+            android:gravity="center"
+            android:text="JM"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- General Progress Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardGeneralProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:cardBackgroundColor="@color/orange_primary"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvUserInitials">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Progreso General"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="59%"
+                    android:textColor="@color/white"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <ProgressBar
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="16dp"
+                    android:progress="59"
+                    android:progressTint="@color/white"
+                    android:theme="@style/Theme.AppCompat" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Goals List -->
+        <TextView
+            android:id="@+id/tvListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Todos los Objetivos"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardGeneralProgress" />
+
+        <LinearLayout
+            android:id="@+id/llGoalsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/tvListTitle">
+
+            <include layout="@layout/item_goal_progress" />
+            <View android:layout_width="1dp" android:layout_height="12dp"/>
+            <include layout="@layout/item_goal_progress" />
+            <View android:layout_width="1dp" android:layout_height="12dp"/>
+            <include layout="@layout/item_goal_progress" />
+            <View android:layout_width="1dp" android:layout_height="12dp"/>
+            <include layout="@layout/item_goal_progress" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/btn_gradient"
+            android:text="+ Crear Nuevo Objetivo"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/llGoalsList"
+            android:layout_marginBottom="100dp"/>
+
+        <!-- Bottom Navigation -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/black"
+            android:elevation="8dp"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="32dp">
+
+            <LinearLayout android:id="@+id/navHome" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_today" android:tint="@color/text_secondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Inicio" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/navRoutine" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" android:tint="@color/text_secondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rutina" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/navProgress" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_directions" android:tint="@color/text_secondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Progreso" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/navGoals" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" android:tint="@color/orange_primary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Objetivos" android:textColor="@color/orange_primary" android:textSize="10sp"/>
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_edit" android:tint="@color/text_secondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perfil" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
