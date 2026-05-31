@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
         tvUserInitials = findViewById(R.id.tvUserInitials);
         tvWelcomeHeader = findViewById(R.id.tvWelcomeHeader);
 
-        // Dynamic Personalization
+        // Personalizacion
         updateDynamicUI();
 
-        // Navigation
+        // Navegacion
         findViewById(R.id.navHome).setOnClickListener(v -> {
         });
 

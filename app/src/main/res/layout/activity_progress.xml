@@ -142,5 +142,17 @@
             </LinearLayout>
         </LinearLayout>
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRegisterProgress"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/btn_gradient"
+            android:text="Registrar Nueva Medición"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/llWeightEvolution" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

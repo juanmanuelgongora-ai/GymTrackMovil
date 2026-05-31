@@ -48,37 +48,50 @@ public class RoutinesActivity extends AppCompatActivity {
         apiService = ApiClient.getClient(this).create(ApiService.class);
         fetchRoutines();
 
-        // Bottom nav: Inicio
-        findViewById(R.id.navInicioBtn).setOnClickListener(v -> {
+        // Navigation
+        findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
 
-        // Bottom nav: Perfil
-        findViewById(R.id.navPerfilBtn).setOnClickListener(v -> {
+        findViewById(R.id.navProgress).setOnClickListener(v -> {
+            startActivity(new Intent(this, ProgressActivity.class));
+            finish();
+        });
+
+        findViewById(R.id.navGoals).setOnClickListener(v -> {
+            startActivity(new Intent(this, GoalsActivity.class));
+            finish();
+        });
+
+        findViewById(R.id.navProfile).setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
+            finish();
         });
     }
 
     private void fetchRoutines() {
+        String token = sessionManager.getUserToken();
+        Logger.i("Fetch routines token present: " + (token != null));
+        // apiService is already initialized in onCreate
         apiService.getRoutines().enqueue(new Callback<List<Routine>>() {
             @Override
             public void onResponse(Call<List<Routine>> call, Response<List<Routine>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Routine> routines = response.body();
-
-                    // Update active routine card stats if data available
-                    if (!routines.isEmpty()) {
-                        // You can update tvActiveRoutineName, tvProgress, tvDaysCompleted here
-                        // based on your API response structure
-                    }
-
                     RoutinesAdapter adapter = new RoutinesAdapter(routines);
                     recyclerView.setAdapter(adapter);
                 } else {
-                    Logger.e("Error cargando rutinas: " + response.code(), null);
-                    Toast.makeText(RoutinesActivity.this,
-                            "Error al cargar rutinas", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Error: " + response.code();
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMsg += " - " + response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Logger.e("Error cargando rutinas: " + errorMsg, null);
+                    Toast.makeText(RoutinesActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -86,7 +99,7 @@ public class RoutinesActivity extends AppCompatActivity {
             public void onFailure(Call<List<Routine>> call, Throwable t) {
                 Logger.e("Error fetching routines", t);
                 Toast.makeText(RoutinesActivity.this,
-                        "Sin conexión al servidor", Toast.LENGTH_SHORT).show();
+                        "Falla conexion: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }

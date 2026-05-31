@@ -242,9 +242,8 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <!-- Inicio -->
         <LinearLayout
-            android:id="@+id/navInicioBtn"
+            android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -266,9 +265,8 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Rutina (ACTIVE) -->
         <LinearLayout
-            android:id="@+id/navRutinaBtn"
+            android:id="@+id/navRoutine"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -297,9 +295,8 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Progreso -->
         <LinearLayout
-            android:id="@+id/navProgresoBtn"
+            android:id="@+id/navProgress"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -321,9 +318,8 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Objetivos -->
         <LinearLayout
-            android:id="@+id/navObjetivosBtn"
+            android:id="@+id/navGoals"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -345,9 +341,8 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Perfil -->
         <LinearLayout
-            android:id="@+id/navPerfilBtn"
+            android:id="@+id/navProfile"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

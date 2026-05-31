@@ -36,17 +36,22 @@ public class ApiClient {
             }
 
             okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
-                    .addInterceptor(new okhttp3.Interceptor() {
-                        @Override
-                        public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain) throws java.io.IOException {
-                            okhttp3.Request original = chain.request();
-                            okhttp3.Request request = original.newBuilder()
-                                    .header("Accept", "application/json")
-                                    .header("Content-Type", "application/json")
-                                    .method(original.method(), original.body())
-                                    .build();
-                            return chain.proceed(request);
+                    .addInterceptor(chain -> {
+                        okhttp3.Request original = chain.request();
+                        okhttp3.Request.Builder builder = original.newBuilder()
+                                .addHeader("Accept", "application/json")
+                                .addHeader("Content-Type", "application/json");
+
+                        com.example.gymtrackmovil.utils.SessionManager liveSession = new com.example.gymtrackmovil.utils.SessionManager(
+                                context.getApplicationContext());
+                        String token = liveSession.getUserToken();
+
+                        if (token != null && !token.isEmpty()) {
+                            String authHeader = token.startsWith("Bearer ") ? token : "Bearer " + token;
+                            builder.header("Authorization", authHeader);
                         }
+
+                        return chain.proceed(builder.build());
                     })
                     .build();
 
