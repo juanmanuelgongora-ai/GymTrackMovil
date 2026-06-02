@@ -1,8 +1,6 @@
 package com.example.gymtrackmovil;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,63 +15,43 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class RoutinesActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
     private ApiService apiService;
-    private SessionManager sessionManager;
-
+    private SessionManager sessionManager; // Declarado para evitar error de compilación
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routines);
-
         Logger.init(this);
-        sessionManager = new SessionManager(this);
-
-        // Avatar initials from email
-        TextView tvAvatarInitials = findViewById(R.id.tvAvatarInitials);
-        String email = sessionManager.getUserEmail();
-        if (email != null && !email.isEmpty()) {
-            String initial = email.substring(0, 1).toUpperCase();
-            tvAvatarInitials.setText(initial);
-        }
-
-        // RecyclerView setup
+        sessionManager = new SessionManager(this); // Inicializado
+        
         recyclerView = findViewById(R.id.rvRoutines);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // API call
         apiService = ApiClient.getClient(this).create(ApiService.class);
         fetchRoutines();
-
-        // Navigation
+        // Navigation (Solucionado y fusionado con master)
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-
         findViewById(R.id.navProgress).setOnClickListener(v -> {
             startActivity(new Intent(this, ProgressActivity.class));
             finish();
         });
-
         findViewById(R.id.navGoals).setOnClickListener(v -> {
             startActivity(new Intent(this, GoalsActivity.class));
             finish();
         });
-
         findViewById(R.id.navProfile).setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
             finish();
         });
     }
-
     private void fetchRoutines() {
         String token = sessionManager.getUserToken();
         Logger.i("Fetch routines token present: " + (token != null));
-        // apiService is already initialized in onCreate
+        
         apiService.getRoutines().enqueue(new Callback<List<Routine>>() {
             @Override
             public void onResponse(Call<List<Routine>> call, Response<List<Routine>> response) {
@@ -94,7 +72,6 @@ public class RoutinesActivity extends AppCompatActivity {
                     Toast.makeText(RoutinesActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
             public void onFailure(Call<List<Routine>> call, Throwable t) {
                 Logger.e("Error fetching routines", t);
