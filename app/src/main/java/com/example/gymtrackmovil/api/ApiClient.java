@@ -35,24 +35,8 @@ public class ApiClient {
                 baseUrl = baseUrl + "api/";
             }
 
-            okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
-                    .addInterceptor(new okhttp3.Interceptor() {
-                        @Override
-                        public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain) throws java.io.IOException {
-                            okhttp3.Request original = chain.request();
-                            okhttp3.Request request = original.newBuilder()
-                                    .header("Accept", "application/json")
-                                    .header("Content-Type", "application/json")
-                                    .method(original.method(), original.body())
-                                    .build();
-                            return chain.proceed(request);
-                        }
-                    })
-                    .build();
-
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
-                    .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
