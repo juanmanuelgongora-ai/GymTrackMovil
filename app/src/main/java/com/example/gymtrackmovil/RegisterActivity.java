@@ -28,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private int currentStep = 0;
 
     // Step 1 Fields
-    private EditText etName, etAddress, etAge, etEmail, etPassword, etPhone, etFamilyPhone;
+    private EditText etName, etLastName, etAddress, etAge, etEmail, etPassword, etPhone, etFamilyPhone;
     private Spinner spinnerEPS;
 
     // Step 2 Fields
@@ -58,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Step 1 Fields
         etName = findViewById(R.id.etName);
+        etLastName = findViewById(R.id.etLastName);
         etAddress = findViewById(R.id.etAddress);
         etAge = findViewById(R.id.etAge);
         etEmail = findViewById(R.id.etEmail);
@@ -128,7 +129,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean validateStep1() {
-        if (etName.getText().toString().isEmpty() || etAddress.getText().toString().isEmpty() ||
+        if (etName.getText().toString().isEmpty() || etLastName.getText().toString().isEmpty() ||
+                etAddress.getText().toString().isEmpty() ||
                 etAge.getText().toString().isEmpty() || etEmail.getText().toString().isEmpty() ||
                 spinnerEPS.getSelectedItemPosition() == 0 || etPassword.getText().toString().isEmpty() ||
                 etPhone.getText().toString().isEmpty() || etFamilyPhone.getText().toString().isEmpty()) {
@@ -204,6 +206,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Collecting data
         String name = etName.getText().toString().trim();
+        String lastName = etLastName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String eps = spinnerEPS.getSelectedItem().toString();
@@ -213,7 +216,7 @@ public class RegisterActivity extends AppCompatActivity {
         String familyPhone = etFamilyPhone.getText().toString().trim();
 
         com.example.gymtrackmovil.models.RegisterRequest request = new com.example.gymtrackmovil.models.RegisterRequest(
-                name, email, password,
+                name, lastName, email, password, password, // password_confirmation = password
                 Integer.parseInt(etAge.getText().toString()),
                 spinnerSex.getSelectedItem().toString(),
                 eps, goal, address, phone, familyPhone);
@@ -227,23 +230,36 @@ public class RegisterActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Logger.i("Usuario registrado: " + email);
                     int age = Integer.parseInt(etAge.getText().toString());
-                    double weight = Double.parseDouble(etWeight.getText().toString());
-                    double height = Double.parseDouble(etHeight.getText().toString());
+                    double weightStr = etWeight.getText().toString().isEmpty() ? 0
+                            : Double.parseDouble(etWeight.getText().toString());
+                    double heightStr = etHeight.getText().toString().isEmpty() ? 0
+                            : Double.parseDouble(etHeight.getText().toString());
                     String sex = spinnerSex.getSelectedItem().toString();
 
-                    dbHelper.saveUser(name, email, goal, address, age, eps, phone, familyPhone, weight, height, sex);
+                    dbHelper.saveUser(name, email, goal, address, age, eps, phone, familyPhone, weightStr, heightStr,
+                            sex);
                     Toast.makeText(RegisterActivity.this, "¡Bienvenido a GymTrack!", Toast.LENGTH_LONG).show();
                     finish();
                 } else {
-                    Logger.e("Error registro API: " + response.code(), null);
-                    Toast.makeText(RegisterActivity.this, "Error en el servidor", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "Error en el servidor";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            Logger.e("Error registro API: " + response.code() + " - " + errorJson, null);
+                            errorMsg = "Error: " + response.code() + " - "
+                                    + (errorJson.contains("email") ? "El correo ya existe" : errorJson);
+                        }
+                    } catch (Exception e) {
+                        Logger.e("Error parseando errorBody", e);
+                    }
+                    Toast.makeText(RegisterActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                 Logger.e("Falla red registro", t);
-                Toast.makeText(RegisterActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

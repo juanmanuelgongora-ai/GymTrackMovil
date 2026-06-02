@@ -40,6 +40,22 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ProgressActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminMembersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GoalsActivity"
+            android:exported="false" />
             
     </application>
 

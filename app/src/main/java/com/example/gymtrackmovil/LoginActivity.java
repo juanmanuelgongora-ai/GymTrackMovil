@@ -24,7 +24,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check if already logged in
         if (sessionManager.isLoggedIn()) {
-            startActivity(new Intent(this, MainActivity.class));
+            String role = sessionManager.getUserRole();
+            if (role != null && (role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("administrador"))) {
+                startActivity(new Intent(this, AdminDashboardActivity.class));
+            } else {
+                startActivity(new Intent(this, MainActivity.class));
+            }
             finish();
         }
 
@@ -70,14 +75,31 @@ public class LoginActivity extends AppCompatActivity {
                             retrofit2.Response<com.example.gymtrackmovil.models.LoginResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             com.example.gymtrackmovil.models.LoginResponse loginResponse = response.body();
-                            sessionManager.createLoginSession(loginResponse.getUser().getEmail(),
-                                    loginResponse.getUser().getName());
+                            String token = loginResponse.getToken();
+                            Logger.i("Token recibido: "
+                                    + (token != null
+                                            ? token.substring(0, Math.min(token.length(), 10)) + "... (long: "
+                                                    + token.length() + ")"
+                                            : "NULL"));
 
-                            Logger.i("Login exitoso para: " + email);
-                            Toast.makeText(LoginActivity.this, "Bienvenido " + loginResponse.getUser().getName(),
+                            String role = loginResponse.getUser().getRole();
+                            sessionManager.createLoginSession(loginResponse.getUser().getEmail(),
+                                    loginResponse.getUser().getName(),
+                                    token,
+                                    role);
+
+                            Logger.i("Login exitoso para: " + email + " con rol: [" + (role != null ? role : "null")
+                                    + "]");
+                            Toast.makeText(LoginActivity.this,
+                                    "Bienvenido " + loginResponse.getUser().getName(),
                                     Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            if (role != null
+                                    && (role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("administrador"))) {
+                                startActivity(new Intent(LoginActivity.this, AdminDashboardActivity.class));
+                            } else {
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            }
                             finish();
                         } else {
                             Logger.e("Login fallido: Credenciales incorrectas", null);

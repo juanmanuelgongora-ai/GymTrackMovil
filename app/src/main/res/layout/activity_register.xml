@@ -127,6 +127,22 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Ingrese su apellido"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="8dp" />
+                <EditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/edittext_bg"
+                    android:hint="ej: Pérez"
+                    android:padding="16dp"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Ingrese su dirección"
                     android:textColor="@color/text_secondary"
                     android:layout_marginBottom="8dp" />
