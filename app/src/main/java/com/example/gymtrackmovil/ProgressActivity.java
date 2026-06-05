@@ -89,7 +89,40 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void updateProgressUI(List<ProgressEntry> progressList) {
-        // Dynamic update of stats would go here
+        if (progressList.isEmpty())
+            return;
+
+        // Get latest entry
+        ProgressEntry latest = progressList.get(0);
+
+        // Update Weight Card
+        View cardWeight = findViewById(R.id.cardWeight);
+        ((TextView) cardWeight.findViewById(R.id.tvStatLabel)).setText("Peso (kg)");
+        ((TextView) cardWeight.findViewById(R.id.tvStatValue)).setText(String.format("%.1f", latest.getWeight()));
+        ((android.widget.ImageView) cardWeight.findViewById(R.id.ivStatIcon))
+                .setImageResource(android.R.drawable.ic_menu_sort_by_size);
+
+        // Update BMI Card
+        View cardBMI = findViewById(R.id.cardBMI);
+        ((TextView) cardBMI.findViewById(R.id.tvStatLabel)).setText("IMC");
+        double bmi = latest.getWeight() / Math.pow(latest.getHeight() / 100.0, 2);
+        ((TextView) cardBMI.findViewById(R.id.tvStatValue)).setText(String.format("%.1f", bmi));
+        ((android.widget.ImageView) cardBMI.findViewById(R.id.ivStatIcon))
+                .setImageResource(android.R.drawable.ic_menu_info_details);
+
+        // Update Fat Card
+        View cardFat = findViewById(R.id.cardFat);
+        ((TextView) cardFat.findViewById(R.id.tvStatLabel)).setText("Grasa Body (%)");
+        ((TextView) cardFat.findViewById(R.id.tvStatValue)).setText(String.format("%.1f%%", latest.getBodyFat()));
+        ((android.widget.ImageView) cardFat.findViewById(R.id.ivStatIcon))
+                .setImageResource(android.R.drawable.ic_menu_view);
+
+        // Update Muscle Card
+        View cardMuscle = findViewById(R.id.cardMuscle);
+        ((TextView) cardMuscle.findViewById(R.id.tvStatLabel)).setText("Músculo (%)");
+        ((TextView) cardMuscle.findViewById(R.id.tvStatValue)).setText(String.format("%.1f%%", latest.getMuscleMass()));
+        ((android.widget.ImageView) cardMuscle.findViewById(R.id.ivStatIcon))
+                .setImageResource(android.R.drawable.ic_menu_compass);
     }
 
     private void showAddProgressDialog() {
@@ -107,7 +140,7 @@ public class ProgressActivity extends AppCompatActivity {
                 double weight = Double.parseDouble(etWeight.getText().toString());
                 double fat = Double.parseDouble(etBodyFat.getText().toString());
                 double muscle = Double.parseDouble(etMuscleMass.getText().toString());
-                saveProgress(new ProgressEntry(weight, fat, muscle, "2026-05-30"));
+                saveProgress(new ProgressEntry(weight, 170.0, fat, muscle, "2026-05-30"));
             } catch (Exception e) {
                 Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show();
             }

@@ -69,19 +69,21 @@
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tvGeneralProgressPercent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="59%"
+                    android:text="0%"
                     android:textColor="@color/white"
                     android:textSize="32sp"
                     android:textStyle="bold" />
 
                 <ProgressBar
+                    android:id="@+id/pbGeneralProgress"
                     style="@android:style/Widget.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
                     android:layout_marginTop="16dp"
-                    android:progress="59"
+                    android:progress="0"
                     android:progressTint="@color/white"
                     android:theme="@style/Theme.AppCompat" />
             </LinearLayout>
@@ -99,22 +101,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardGeneralProgress" />
 
-        <LinearLayout
-            android:id="@+id/llGoalsList"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvGoals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/tvListTitle">
-
-            <include layout="@layout/item_goal_progress" />
-            <View android:layout_width="1dp" android:layout_height="12dp"/>
-            <include layout="@layout/item_goal_progress" />
-            <View android:layout_width="1dp" android:layout_height="12dp"/>
-            <include layout="@layout/item_goal_progress" />
-            <View android:layout_width="1dp" android:layout_height="12dp"/>
-            <include layout="@layout/item_goal_progress" />
-        </LinearLayout>
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/tvListTitle" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCreateGoal"
@@ -126,7 +119,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/llGoalsList"
+            app:layout_constraintTop_toBottomOf="@id/rvGoals"
             android:layout_marginBottom="100dp"/>
 
         <!-- Bottom Navigation -->

@@ -20,7 +20,10 @@ import retrofit2.Response;
 public class GoalsActivity extends AppCompatActivity {
 
     private SessionManager session;
-    private TextView tvUserInitials;
+    private TextView tvUserInitials, tvGeneralProgressPercent;
+    private androidx.recyclerview.widget.RecyclerView rvGoals;
+    private com.example.gymtrackmovil.adapters.GoalsAdapter goalsAdapter;
+    private android.widget.ProgressBar pbGeneralProgress;
     private ApiService apiService;
 
     @Override
@@ -31,6 +34,23 @@ public class GoalsActivity extends AppCompatActivity {
         session = new SessionManager(this);
         apiService = ApiClient.getClient(this).create(ApiService.class);
         tvUserInitials = findViewById(R.id.tvUserInitials);
+        tvGeneralProgressPercent = findViewById(R.id.cardGeneralProgress).findViewById(R.id.tvGeneralProgressPercent); // Wait,
+                                                                                                                       // I
+                                                                                                                       // need
+                                                                                                                       // to
+                                                                                                                       // check
+                                                                                                                       // the
+                                                                                                                       // IDs
+                                                                                                                       // in
+                                                                                                                       // activity_goals.xml
+                                                                                                                       // again
+                                                                                                                       // or
+                                                                                                                       // add
+                                                                                                                       // them
+        pbGeneralProgress = findViewById(R.id.cardGeneralProgress).findViewById(R.id.pbGeneralProgress);
+
+        rvGoals = findViewById(R.id.rvGoals);
+        rvGoals.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
 
         setupUI();
         fetchGoals();
@@ -77,7 +97,20 @@ public class GoalsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Update goals list UI
+                    List<Goal> goals = response.body();
+                    goalsAdapter = new com.example.gymtrackmovil.adapters.GoalsAdapter(goals);
+                    rvGoals.setAdapter(goalsAdapter);
+
+                    // Update General Progress
+                    if (!goals.isEmpty()) {
+                        int totalProgress = 0;
+                        for (Goal g : goals) {
+                            totalProgress += g.getProgress();
+                        }
+                        int avg = totalProgress / goals.size();
+                        tvGeneralProgressPercent.setText(avg + "%");
+                        pbGeneralProgress.setProgress(avg);
+                    }
                 }
             }
 

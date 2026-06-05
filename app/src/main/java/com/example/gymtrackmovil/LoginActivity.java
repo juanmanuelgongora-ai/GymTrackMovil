@@ -27,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
             String role = sessionManager.getUserRole();
             if (role != null && (role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("administrador"))) {
                 startActivity(new Intent(this, AdminDashboardActivity.class));
+            } else if (role != null && role.equalsIgnoreCase("entrenador")) {
+                startActivity(new Intent(this, TrainerDashboardActivity.class));
             } else {
                 startActivity(new Intent(this, MainActivity.class));
             }
@@ -97,6 +99,8 @@ public class LoginActivity extends AppCompatActivity {
                             if (role != null
                                     && (role.equalsIgnoreCase("admin") || role.equalsIgnoreCase("administrador"))) {
                                 startActivity(new Intent(LoginActivity.this, AdminDashboardActivity.class));
+                            } else if (role != null && role.equalsIgnoreCase("entrenador")) {
+                                startActivity(new Intent(LoginActivity.this, TrainerDashboardActivity.class));
                             } else {
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             }
