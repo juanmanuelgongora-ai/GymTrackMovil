@@ -1,47 +1,31 @@
 package com.example.gymtrackmovil.database;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "GymTrack.db";
     private static final int DATABASE_VERSION = 4;
-
-    // Table Names
     public static final String TABLE_ROUTINES = "routines";
     public static final String TABLE_LOGS = "app_logs";
     public static final String TABLE_USERS = "users";
     public static final String TABLE_METRICS = "metrics";
     public static final String TABLE_GOALS = "goals";
-
-    // Common columns
     public static final String KEY_ID = "id";
-
-    // Routines Table columns
     public static final String KEY_ROUTINE_NAME = "name";
     public static final String KEY_ROUTINE_DESC = "description";
-
-    // Logs Table columns
     public static final String KEY_LOG_TYPE = "type";
     public static final String KEY_LOG_MSG = "message";
     public static final String KEY_LOG_TIMESTAMP = "timestamp";
-
-    // Create Table Statements
     private static final String CREATE_TABLE_ROUTINES = "CREATE TABLE " + TABLE_ROUTINES + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_ROUTINE_NAME + " TEXT,"
             + KEY_ROUTINE_DESC + " TEXT" + ")";
-
     private static final String CREATE_TABLE_LOGS = "CREATE TABLE " + TABLE_LOGS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_LOG_TYPE + " TEXT,"
             + KEY_LOG_MSG + " TEXT,"
             + KEY_LOG_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ")";
-
-    // Users Table columns
     public static final String KEY_USER_NAME = "name";
     public static final String KEY_USER_EMAIL = "email";
     public static final String KEY_USER_PASSWORD = "password";
@@ -56,7 +40,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_USER_SEX = "sex";
     public static final String KEY_USER_ROLE = "role";
     public static final String KEY_USER_TRAINER_EMAIL = "trainer_email";
-
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_USER_NAME + " TEXT,"
@@ -73,14 +56,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_USER_SEX + " TEXT,"
             + KEY_USER_ROLE + " TEXT DEFAULT 'cliente',"
             + KEY_USER_TRAINER_EMAIL + " TEXT" + ")";
-
-    // Metrics Table columns
     public static final String KEY_METRIC_EMAIL = "user_email";
     public static final String KEY_METRIC_WEIGHT = "weight";
     public static final String KEY_METRIC_BODY_FAT = "body_fat";
     public static final String KEY_METRIC_MUSCLE_MASS = "muscle_mass";
     public static final String KEY_METRIC_DATE = "date";
-
     private static final String CREATE_TABLE_METRICS = "CREATE TABLE " + TABLE_METRICS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_METRIC_EMAIL + " TEXT,"
@@ -88,14 +68,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_METRIC_BODY_FAT + " REAL,"
             + KEY_METRIC_MUSCLE_MASS + " REAL,"
             + KEY_METRIC_DATE + " TEXT" + ")";
-
-    // Goals Table columns
     public static final String KEY_GOAL_EMAIL = "user_email";
     public static final String KEY_GOAL_TITLE = "title";
     public static final String KEY_GOAL_TARGET = "target";
     public static final String KEY_GOAL_PROGRESS = "progress";
     public static final String KEY_GOAL_DEADLINE = "deadline";
-
     private static final String CREATE_TABLE_GOALS = "CREATE TABLE " + TABLE_GOALS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_GOAL_EMAIL + " TEXT,"
@@ -103,11 +80,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_GOAL_TARGET + " TEXT,"
             + KEY_GOAL_PROGRESS + " INTEGER,"
             + KEY_GOAL_DEADLINE + " TEXT" + ")";
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ROUTINES);
@@ -116,17 +91,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_METRICS);
         db.execSQL(CREATE_TABLE_GOALS);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Migrate gracefully instead of dropping all data
         if (oldVersion < 4) {
-            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_ROLE + " TEXT DEFAULT 'cliente'"); } catch (Exception e) { /* column already exists */ }
-            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_TRAINER_EMAIL + " TEXT"); } catch (Exception e) { /* column already exists */ }
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_ROLE + " TEXT DEFAULT 'cliente'"); } catch (Exception e) {  }
+            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_TRAINER_EMAIL + " TEXT"); } catch (Exception e) {  }
         }
     }
-
-    // Helper method to add a user to DB
     public long saveUser(String name, String email, String password, String goal, String address, int age,
             String eps, String phone, String familyPhone,
             double weight, double height, String sex) {
@@ -148,8 +119,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
-
-    // Helper method to validate user credentials
     public boolean checkUserCredentials(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.query(TABLE_USERS,
@@ -162,8 +131,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return exists;
     }
-
-    // Helper method to check if user email already exists
     public boolean checkUserExists(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.query(TABLE_USERS,
@@ -176,8 +143,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return exists;
     }
-
-    // Helper method to get user details by email
     public android.database.Cursor getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS,
@@ -186,8 +151,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{email},
                 null, null, null);
     }
-
-    // Helper method to update user profile
     public int updateUserProfile(String email, String name, String address, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -198,8 +161,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rows;
     }
-
-    // Helper method to add a log entry to DB
     public void addLog(String type, String message) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -208,8 +169,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_LOGS, null, values);
         db.close();
     }
-
-    // Helper methods for Metrics
     public long saveMetric(String userEmail, double weight, double bodyFat, double muscleMass, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -222,7 +181,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
-
     public android.database.Cursor getUserMetrics(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_METRICS,
@@ -231,8 +189,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{userEmail},
                 null, null, KEY_ID + " DESC");
     }
-
-    // Helper methods for Goals
     public long saveGoal(String userEmail, String title, String target, int progress, String deadline) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -245,7 +201,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
-
     public android.database.Cursor getUserGoals(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_GOALS,
@@ -254,8 +209,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{userEmail},
                 null, null, KEY_ID + " ASC");
     }
-
-    // ─── Role-aware user save ────────────────────────────────────────────────
     public long saveUserWithRole(String name, String email, String password, String goal,
             String address, int age, String eps, String phone, String familyPhone,
             double weight, double height, String sex, String role) {
@@ -278,30 +231,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
-
-    // ─── Get all users (for admin) ───────────────────────────────────────────
     public android.database.Cursor getAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null, null, null, null, null, KEY_ID + " ASC");
     }
-
-    // ─── Get users by role ───────────────────────────────────────────────────
     public android.database.Cursor getUsersByRole(String role) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null,
                 KEY_USER_ROLE + "=?", new String[]{role},
                 null, null, KEY_USER_NAME + " ASC");
     }
-
-    // ─── Get clients assigned to a specific trainer ──────────────────────────
     public android.database.Cursor getClientsByTrainer(String trainerEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null,
                 KEY_USER_TRAINER_EMAIL + "=?", new String[]{trainerEmail},
                 null, null, KEY_USER_NAME + " ASC");
     }
-
-    // ─── Update a user's role ────────────────────────────────────────────────
     public int updateUserRole(String email, String role) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -310,8 +255,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rows;
     }
-
-    // ─── Assign a trainer to a client ────────────────────────────────────────
     public int assignTrainer(String clientEmail, String trainerEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -320,8 +263,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return rows;
     }
-
-    // ─── Count users by role ─────────────────────────────────────────────────
     public int countUsersByRole(String role) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.rawQuery(
@@ -335,8 +276,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return count;
     }
-
-    // ─── Count all users ─────────────────────────────────────────────────────
     public int countAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_USERS, null);
@@ -349,3 +288,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 }
+

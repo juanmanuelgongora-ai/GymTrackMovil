@@ -6,7 +6,6 @@
     android:layout_marginBottom="12dp"
     android:background="@drawable/card_bg"
     android:padding="16dp">
-
     <TextView
         android:id="@+id/tvMemberAvatar"
         android:layout_width="48dp"
@@ -19,7 +18,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -29,7 +27,6 @@
         app:layout_constraintEnd_toStartOf="@id/tvMemberStatus"
         app:layout_constraintStart_toEndOf="@id/tvMemberAvatar"
         app:layout_constraintTop_toTopOf="parent">
-
         <TextView
             android:id="@+id/tvMemberName"
             android:layout_width="wrap_content"
@@ -37,7 +34,6 @@
             android:text="Juan García"
             android:textColor="@color/white"
             android:textStyle="bold" />
-
         <TextView
             android:id="@+id/tvMemberEmail"
             android:layout_width="wrap_content"
@@ -45,7 +41,6 @@
             android:text="juan@email.com"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
-
         <TextView
             android:id="@+id/tvMemberPlan"
             android:layout_width="wrap_content"
@@ -56,7 +51,6 @@
             android:textSize="10sp"
             android:textStyle="bold" />
     </LinearLayout>
-
     <TextView
         android:id="@+id/tvMemberStatus"
         android:layout_width="wrap_content"
@@ -72,5 +66,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,5 +1,4 @@
 package com.example.gymtrackmovil;
-
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.utils.SessionManager;
@@ -14,18 +13,14 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class ProfileActivity extends AppCompatActivity {
-
     private EditText etName, etLastName, etEmail, etPhone, etAddress;
     private SessionManager sessionManager;
     private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
         sessionManager = new SessionManager(this);
         dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         etName = findViewById(R.id.etProfileName);
@@ -33,11 +28,8 @@ public class ProfileActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etProfileEmail);
         etPhone = findViewById(R.id.etProfilePhone);
         etAddress = findViewById(R.id.etProfileAddress);
-
         loadUserData();
-
         findViewById(R.id.btnSaveProfile).setOnClickListener(v -> saveProfileChanges());
-
         findViewById(R.id.btnLogout).setOnClickListener(v -> {
             sessionManager.logoutUser();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -45,33 +37,26 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
-        // Navigation
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-
         findViewById(R.id.navRoutine).setOnClickListener(v -> {
             startActivity(new Intent(this, RoutinesActivity.class));
             finish();
         });
-
         findViewById(R.id.navProgress).setOnClickListener(v -> {
             startActivity(new Intent(this, ProgressActivity.class));
             finish();
         });
-
         findViewById(R.id.navGoals).setOnClickListener(v -> {
             startActivity(new Intent(this, GoalsActivity.class));
             finish();
         });
     }
-
     private void loadUserData() {
         String email = sessionManager.getUserEmail();
         etEmail.setText(email);
-
         android.database.Cursor cursor = dbHelper.getUserByEmail(email);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -80,11 +65,9 @@ public class ProfileActivity extends AppCompatActivity {
                         .getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_USER_PHONE);
                 int addressIndex = cursor
                         .getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_USER_ADDRESS);
-
                 String fullName = nameIndex != -1 ? cursor.getString(nameIndex) : sessionManager.getUserName();
                 String phone = phoneIndex != -1 ? cursor.getString(phoneIndex) : "";
                 String address = addressIndex != -1 ? cursor.getString(addressIndex) : "";
-
                 if (fullName != null && fullName.contains(" ")) {
                     String[] parts = fullName.split(" ", 2);
                     etName.setText(parts[0]);
@@ -108,19 +91,16 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
     }
-
     private void saveProfileChanges() {
         String name = etName.getText().toString().trim();
         String lastName = etLastName.getText().toString().trim();
         String fullName = name + " " + lastName;
         String phone = etPhone.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
-
         if (name.isEmpty() || lastName.isEmpty()) {
             Toast.makeText(this, "Nombre y Apellido son obligatorios", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String email = sessionManager.getUserEmail();
         int rows = dbHelper.updateUserProfile(email, fullName, address, phone);
         if (rows > 0) {
@@ -133,3 +113,4 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+

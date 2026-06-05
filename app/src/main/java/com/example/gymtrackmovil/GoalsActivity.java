@@ -1,5 +1,4 @@
 package com.example.gymtrackmovil;
-
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -18,30 +17,23 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class GoalsActivity extends AppCompatActivity {
-
     private SessionManager session;
     private TextView tvUserInitials;
     private android.widget.LinearLayout llGoalsList;
     private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goals);
-
         session = new SessionManager(this);
         dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         tvUserInitials = findViewById(R.id.tvUserInitials);
         llGoalsList = findViewById(R.id.llGoalsList);
-
         setupUI();
         fetchGoals();
-
         findViewById(R.id.btnCreateGoal).setOnClickListener(v -> showAddGoalDialog());
     }
-
     private void setupUI() {
         String name = session.getUserName();
         if (name.contains(" ")) {
@@ -51,46 +43,34 @@ public class GoalsActivity extends AppCompatActivity {
         } else {
             tvUserInitials.setText(name.substring(0, Math.min(name.length(), 2)).toUpperCase());
         }
-
         findViewById(R.id.ivBack).setOnClickListener(v -> finish());
-
-        // Navigation
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-
         findViewById(R.id.navRoutine).setOnClickListener(v -> {
             startActivity(new Intent(this, RoutinesActivity.class));
             finish();
         });
-
         findViewById(R.id.navProgress).setOnClickListener(v -> {
             startActivity(new Intent(this, ProgressActivity.class));
             finish();
         });
-
         findViewById(R.id.navProfile).setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
             finish();
         });
     }
-
     private void fetchGoals() {
         String email = session.getUserEmail();
-
-        // Seed default goals into SQLite on first run (only if none exist yet)
         android.database.Cursor check = dbHelper.getUserGoals(email);
         boolean hasGoals = (check != null && check.getCount() > 0);
         if (check != null) check.close();
-
         if (!hasGoals) {
             dbHelper.saveGoal(email, "Perder Peso Corporal", "Bajar a 80kg", 60, "2026-12-31");
             dbHelper.saveGoal(email, "Ganar Masa Muscular", "Aumentar 5kg de músculo", 40, "2026-12-31");
             dbHelper.saveGoal(email, "Resistencia Cardiovascular", "Correr 10k sin parar", 80, "2026-09-30");
         }
-
-        // Load ALL goals from SQLite and render them
         List<Goal> goalsList = new java.util.ArrayList<>();
         android.database.Cursor cursor = dbHelper.getUserGoals(email);
         if (cursor != null) {
@@ -110,42 +90,30 @@ public class GoalsActivity extends AppCompatActivity {
         }
         updateGoalsUI(goalsList);
     }
-
-
     private void updateGoalsUI(List<Goal> goalsList) {
         if (llGoalsList == null) return;
         llGoalsList.removeAllViews();
-
         int totalProgressSum = 0;
-
         for (int i = 0; i < goalsList.size(); i++) {
             Goal goal = goalsList.get(i);
             totalProgressSum += goal.getProgress();
-
             View itemView = LayoutInflater.from(this).inflate(R.layout.item_goal_progress, llGoalsList, false);
             TextView tvGoalName = itemView.findViewById(R.id.tvGoalName);
             TextView tvGoalProgressPercent = itemView.findViewById(R.id.tvGoalProgressPercent);
             ProgressBar pbGoal = itemView.findViewById(R.id.pbGoal);
-
             tvGoalName.setText(goal.getTitle());
             tvGoalProgressPercent.setText(goal.getProgress() + "%");
             pbGoal.setProgress(goal.getProgress());
-
             llGoalsList.addView(itemView);
-
-            // Add separator view if not the last item
             if (i < goalsList.size() - 1) {
                 View spacer = new View(this);
                 spacer.setLayoutParams(new android.widget.LinearLayout.LayoutParams(1, (int) (12 * getResources().getDisplayMetrics().density)));
                 llGoalsList.addView(spacer);
             }
         }
-
-        // Calculate and update General Progress Card
         if (!goalsList.isEmpty()) {
             int averageProgress = totalProgressSum / goalsList.size();
-            TextView tvGenPercent = findViewById(R.id.cardGeneralProgress).findViewById(android.R.id.text1); // Let's check how the percentage is defined in activity_goals.xml
-            // Looking at activity_goals.xml, the percentage text doesn't have an ID, but it is the second child of the linear layout inside cardGeneralProgress. Let's find it.
+            TextView tvGenPercent = findViewById(R.id.cardGeneralProgress).findViewById(android.R.id.text1); 
             try {
                 androidx.cardview.widget.CardView card = findViewById(R.id.cardGeneralProgress);
                 View child = card.getChildAt(0);
@@ -161,15 +129,12 @@ public class GoalsActivity extends AppCompatActivity {
             }
         }
     }
-
     private void showAddGoalDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Nuevo Objetivo");
-
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_goal, null);
         final EditText etTitle = view.findViewById(R.id.etGoalTitle);
         final EditText etTarget = view.findViewById(R.id.etGoalTarget);
-
         builder.setView(view);
         builder.setPositiveButton("Crear", (dialog, which) -> {
             String title = etTitle.getText().toString().trim();
@@ -181,7 +146,6 @@ public class GoalsActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancelar", null);
         builder.show();
     }
-
     private void saveGoal(Goal goal) {
         String email = session.getUserEmail();
         long id = dbHelper.saveGoal(email, goal.getTitle(), goal.getTarget(), goal.getProgress(), goal.getDeadline());
@@ -193,3 +157,4 @@ public class GoalsActivity extends AppCompatActivity {
         }
     }
 }
+

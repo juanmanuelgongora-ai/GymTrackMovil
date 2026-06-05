@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GymTrackMovil"
         android:usesCleartextTraffic="true">
-
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -24,47 +21,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
         <activity
             android:name=".RoutinesActivity"
             android:exported="false" />
-
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
-
         <activity
             android:name=".ProgressActivity"
             android:exported="false" />
-
         <activity
             android:name=".AdminDashboardActivity"
             android:exported="false" />
-
         <activity
             android:name=".AdminMembersActivity"
             android:exported="false" />
-
         <activity
             android:name=".GoalsActivity"
             android:exported="false" />
-            
         <activity
             android:name=".AdminCreateTrainerActivity"
             android:exported="false" />
-
         <activity
             android:name=".TrainerDashboardActivity"
             android:exported="false" />
-            
     </application>
-
 </manifest>

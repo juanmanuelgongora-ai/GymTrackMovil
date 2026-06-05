@@ -25,7 +25,6 @@ public class ApiClient {
             if (!baseUrl.endsWith("api/")) {
                 baseUrl = baseUrl + "api/";
             }
-            // Cliente OkHttp personalizado con interceptor de cabeceras de autorización y JSON (De Master)
             okhttp3.OkHttpClient okHttpClient = new okhttp3.OkHttpClient.Builder()
                     .addInterceptor(chain -> {
                         okhttp3.Request original = chain.request();
@@ -42,10 +41,9 @@ public class ApiClient {
                         return chain.proceed(builder.build());
                     })
                     .build();
-            // Retrofit configurado para usar el OkHttpClient con interceptores
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
-                    .client(okHttpClient) // Vinculado correctamente para inyectar los headers de autorización
+                    .client(okHttpClient) 
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

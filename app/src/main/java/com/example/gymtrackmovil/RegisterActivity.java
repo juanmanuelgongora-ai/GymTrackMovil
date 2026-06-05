@@ -1,5 +1,4 @@
 package com.example.gymtrackmovil;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,37 +16,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.R;
 import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.NetworkUtils;
-
 public class RegisterActivity extends AppCompatActivity {
-
     private ViewFlipper viewFlipper;
     private android.widget.ScrollView scrollView;
     private Button btnBack, btnContinue;
     private TextView tvStep1Circle, tvStep2Circle, tvStep3Circle;
     private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
     private int currentStep = 0;
-
-    // Step 1 Fields
     private EditText etName, etLastName, etAddress, etAge, etEmail, etPassword, etPhone, etFamilyPhone;
     private Spinner spinnerEPS;
-
-    // Step 2 Fields
     private EditText etWeight, etHeight;
     private Spinner spinnerSex;
-
-    // Step 3 Fields
     private Spinner spinnerGoal;
     private CheckBox cbDataTreatment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         Logger.init(this);
         dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
-
-        // UI Components
         viewFlipper = findViewById(R.id.viewFlipper);
         scrollView = findViewById(R.id.scrollView);
         btnBack = findViewById(R.id.btnBack);
@@ -55,8 +42,6 @@ public class RegisterActivity extends AppCompatActivity {
         tvStep1Circle = findViewById(R.id.tvStep1Circle);
         tvStep2Circle = findViewById(R.id.tvStep2Circle);
         tvStep3Circle = findViewById(R.id.tvStep3Circle);
-
-        // Step 1 Fields
         etName = findViewById(R.id.etName);
         etLastName = findViewById(R.id.etLastName);
         etAddress = findViewById(R.id.etAddress);
@@ -66,34 +51,22 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etPhone = findViewById(R.id.etPhone);
         etFamilyPhone = findViewById(R.id.etFamilyPhone);
-
-        // Step 2 Fields
         etWeight = findViewById(R.id.etWeight);
         etHeight = findViewById(R.id.etHeight);
         spinnerSex = findViewById(R.id.spinnerSex);
-
-        // Step 3 Fields
         spinnerGoal = findViewById(R.id.spinnerGoal);
         cbDataTreatment = findViewById(R.id.cbDataTreatment);
-
-        // Spinners setup
         setupSpinners();
-
-        // Step 3 Logic: Data Treatment Checkbox
         cbDataTreatment.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (currentStep == 2) {
                 updateRegisterButtonState(isChecked);
             }
         });
-
-        // Listeners
         btnContinue.setOnClickListener(v -> handleContinue());
         btnBack.setOnClickListener(v -> handleBack());
         findViewById(R.id.tvGoToLogin).setOnClickListener(v -> finish());
-
         updateStepperUI();
     }
-
     private void setupSpinners() {
         spinnerEPS.setAdapter(buildSpinnerAdapter(new String[]{
                 "Seleccione su EPS", "Sura", "Sanitas", "Compensar", "COOMEVA", "Nueva EPS", "Famisanar", "Otro"
@@ -105,8 +78,6 @@ public class RegisterActivity extends AppCompatActivity {
                 "Seleccione objetivo", "Perder peso", "Ganar masa muscular", "Mantenerse en forma", "Competencia"
         }));
     }
-
-    /** Builds a spinner adapter with white text for both the selected view and dropdown items. */
     private ArrayAdapter<String> buildSpinnerAdapter(String[] items) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item, items) {
             @Override
@@ -124,14 +95,11 @@ public class RegisterActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         return adapter;
     }
-
-
     private void handleContinue() {
         if (currentStep == 0 && !validateStep1())
             return;
         if (currentStep == 1 && !validateStep2())
             return;
-
         if (currentStep < 2) {
             currentStep++;
             viewFlipper.showNext();
@@ -141,7 +109,6 @@ public class RegisterActivity extends AppCompatActivity {
             finalizeRegistration();
         }
     }
-
     private boolean validateStep1() {
         if (etName.getText().toString().isEmpty() || etLastName.getText().toString().isEmpty() ||
                 etAddress.getText().toString().isEmpty() ||
@@ -153,7 +120,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return true;
     }
-
     private boolean validateStep2() {
         if (etAge.getText().toString().isEmpty() || etWeight.getText().toString().isEmpty() ||
                 etHeight.getText().toString().isEmpty() || spinnerSex.getSelectedItemPosition() == 0) {
@@ -162,7 +128,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return true;
     }
-
     private void handleBack() {
         if (currentStep > 0) {
             currentStep--;
@@ -173,14 +138,10 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }
     }
-
     private void updateStepperUI() {
-        // Reset colors
         tvStep1Circle.setBackgroundResource(R.drawable.step_circle_inactive);
         tvStep2Circle.setBackgroundResource(R.drawable.step_circle_inactive);
         tvStep3Circle.setBackgroundResource(R.drawable.step_circle_inactive);
-
-        // Highlight current
         if (currentStep == 0) {
             tvStep1Circle.setBackgroundResource(R.drawable.step_circle_active);
             btnBack.setText("Regresar");
@@ -200,7 +161,6 @@ public class RegisterActivity extends AppCompatActivity {
             updateRegisterButtonState(cbDataTreatment.isChecked());
         }
     }
-
     private void updateRegisterButtonState(boolean isChecked) {
         btnContinue.setEnabled(isChecked);
         btnContinue.setAlpha(isChecked ? 1.0f : 0.5f);
@@ -210,8 +170,6 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Debe aceptar los términos y condiciones.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // Collecting data
         String name = etName.getText().toString().trim();
         String lastName = etLastName.getText().toString().trim();
         String fullName = name + " " + lastName;
@@ -222,29 +180,20 @@ public class RegisterActivity extends AppCompatActivity {
         String address = etAddress.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String familyPhone = etFamilyPhone.getText().toString().trim();
-
         if (dbHelper.checkUserExists(email)) {
             Toast.makeText(this, "El correo electrónico ya está registrado.", Toast.LENGTH_LONG).show();
             return;
         }
-
         int age = etAge.getText().toString().isEmpty() ? 0 : Integer.parseInt(etAge.getText().toString());
         double weightStr = etWeight.getText().toString().isEmpty() ? 0 : Double.parseDouble(etWeight.getText().toString());
         double heightStr = etHeight.getText().toString().isEmpty() ? 0 : Double.parseDouble(etHeight.getText().toString());
         String sex = spinnerSex.getSelectedItem().toString();
-
         long id = dbHelper.saveUser(fullName, email, password, goal, address, age, eps, phone, familyPhone, weightStr, heightStr, sex);
-        
         if (id != -1) {
             Logger.i("Usuario registrado localmente: " + email);
-            
-            // Auto login after register
             com.example.gymtrackmovil.utils.SessionManager sessionManager = new com.example.gymtrackmovil.utils.SessionManager(this);
             sessionManager.createLoginSession(email, fullName, "local-session-token-" + email, "cliente");
-            
             Toast.makeText(RegisterActivity.this, "¡Bienvenido a GymTrack! Registro local exitoso.", Toast.LENGTH_LONG).show();
-            
-            // Go to MainActivity
             android.content.Intent intent = new android.content.Intent(this, MainActivity.class);
             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

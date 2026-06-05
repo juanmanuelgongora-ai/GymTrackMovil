@@ -6,14 +6,12 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="12dp">
-
     <ImageView
         android:id="@+id/ivStatIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@android:drawable/ic_menu_myplaces"
         android:tint="@color/orange_primary" />
-
     <TextView
         android:id="@+id/tvStatValue"
         android:layout_width="wrap_content"
@@ -23,7 +21,6 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
-
     <TextView
         android:id="@+id/tvStatLabel"
         android:layout_width="wrap_content"
@@ -32,3 +29,4 @@
         android:textColor="@color/text_secondary"
         android:textSize="10sp" />
 </LinearLayout>
+
