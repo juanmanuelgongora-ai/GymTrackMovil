@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.api.ApiClient;
 import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.ProgressEntry;
+import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
 import retrofit2.Call;
@@ -21,7 +22,7 @@ public class ProgressActivity extends AppCompatActivity {
 
     private SessionManager session;
     private TextView tvUserInitials;
-    private ApiService apiService;
+    private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class ProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_progress);
 
         session = new SessionManager(this);
-        apiService = ApiClient.getClient(this).create(ApiService.class);
+        dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         tvUserInitials = findViewById(R.id.tvUserInitials);
 
         setupUI();
@@ -73,23 +74,31 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void fetchProgressData() {
-        apiService.getProgress().enqueue(new Callback<List<ProgressEntry>>() {
-            @Override
-            public void onResponse(Call<List<ProgressEntry>> call, Response<List<ProgressEntry>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateProgressUI(response.body());
-                }
+        List<ProgressEntry> progressList = new java.util.ArrayList<>();
+        String email = session.getUserEmail();
+        android.database.Cursor cursor = dbHelper.getUserMetrics(email);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int wIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_METRIC_WEIGHT);
+                int fIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_METRIC_BODY_FAT);
+                int mIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_METRIC_MUSCLE_MASS);
+                int dIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_METRIC_DATE);
+                
+                double weight = wIdx != -1 ? cursor.getDouble(wIdx) : 0;
+                double fat = fIdx != -1 ? cursor.getDouble(fIdx) : 0;
+                double muscle = mIdx != -1 ? cursor.getDouble(mIdx) : 0;
+                String date = dIdx != -1 ? cursor.getString(dIdx) : "";
+                
+                progressList.add(new ProgressEntry(weight, fat, muscle, date));
             }
-
-            @Override
-            public void onFailure(Call<List<ProgressEntry>> call, Throwable t) {
-                Toast.makeText(ProgressActivity.this, "Error al cargar progreso", Toast.LENGTH_SHORT).show();
-            }
-        });
+            cursor.close();
+        }
+        updateProgressUI(progressList);
     }
 
     private void updateProgressUI(List<ProgressEntry> progressList) {
-        // Dynamic update of stats would go here
+        // Dynamic update of stats would go here, database has records now
+        Logger.i("Loaded local progress entries: " + progressList.size());
     }
 
     private void showAddProgressDialog() {
@@ -107,7 +116,9 @@ public class ProgressActivity extends AppCompatActivity {
                 double weight = Double.parseDouble(etWeight.getText().toString());
                 double fat = Double.parseDouble(etBodyFat.getText().toString());
                 double muscle = Double.parseDouble(etMuscleMass.getText().toString());
-                saveProgress(new ProgressEntry(weight, fat, muscle, "2026-05-30"));
+                
+                String currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
+                saveProgress(new ProgressEntry(weight, fat, muscle, currentDate));
             } catch (Exception e) {
                 Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show();
             }
@@ -117,27 +128,13 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void saveProgress(ProgressEntry entry) {
-        apiService.addProgress(entry).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(ProgressActivity.this, "Medición guardada", Toast.LENGTH_SHORT).show();
-                    fetchProgressData();
-                } else {
-                    String msg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null)
-                            msg += " " + response.errorBody().string();
-                    } catch (Exception e) {
-                    }
-                    Toast.makeText(ProgressActivity.this, msg, Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ProgressActivity.this, "Falla red: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        String email = session.getUserEmail();
+        long id = dbHelper.saveMetric(email, entry.getWeight(), entry.getBodyFat(), entry.getMuscleMass(), entry.getDate());
+        if (id != -1) {
+            Toast.makeText(ProgressActivity.this, "Medición guardada localmente", Toast.LENGTH_SHORT).show();
+            fetchProgressData();
+        } else {
+            Toast.makeText(ProgressActivity.this, "Error al guardar medición en SQLite", Toast.LENGTH_SHORT).show();
+        }
     }
 }

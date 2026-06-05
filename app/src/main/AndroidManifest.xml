@@ -57,6 +57,14 @@
             android:name=".GoalsActivity"
             android:exported="false" />
             
+        <activity
+            android:name=".AdminCreateTrainerActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".TrainerDashboardActivity"
+            android:exported="false" />
+            
     </application>
 
 </manifest>

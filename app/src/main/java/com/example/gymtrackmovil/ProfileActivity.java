@@ -19,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private EditText etName, etLastName, etEmail, etPhone, etAddress;
     private SessionManager sessionManager;
+    private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         sessionManager = new SessionManager(this);
+        dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         etName = findViewById(R.id.etProfileName);
         etLastName = findViewById(R.id.etProfileLastName);
         etEmail = findViewById(R.id.etProfileEmail);
@@ -67,24 +69,50 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        String fullName = sessionManager.getUserName();
         String email = sessionManager.getUserEmail();
-
-        if (fullName.contains(" ")) {
-            String[] parts = fullName.split(" ", 2);
-            etName.setText(parts[0]);
-            etLastName.setText(parts[1]);
-        } else {
-            etName.setText(fullName);
-        }
         etEmail.setText(email);
-        // Phone and Address would normally come from a getProfile API call
-        // For now, we'll leave them empty or use placeholder
+
+        android.database.Cursor cursor = dbHelper.getUserByEmail(email);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int nameIndex = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_USER_NAME);
+                int phoneIndex = cursor
+                        .getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_USER_PHONE);
+                int addressIndex = cursor
+                        .getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_USER_ADDRESS);
+
+                String fullName = nameIndex != -1 ? cursor.getString(nameIndex) : sessionManager.getUserName();
+                String phone = phoneIndex != -1 ? cursor.getString(phoneIndex) : "";
+                String address = addressIndex != -1 ? cursor.getString(addressIndex) : "";
+
+                if (fullName != null && fullName.contains(" ")) {
+                    String[] parts = fullName.split(" ", 2);
+                    etName.setText(parts[0]);
+                    etLastName.setText(parts[1]);
+                } else {
+                    etName.setText(fullName);
+                    etLastName.setText("");
+                }
+                etPhone.setText(phone);
+                etAddress.setText(address);
+            }
+            cursor.close();
+        } else {
+            String fullName = sessionManager.getUserName();
+            if (fullName.contains(" ")) {
+                String[] parts = fullName.split(" ", 2);
+                etName.setText(parts[0]);
+                etLastName.setText(parts[1]);
+            } else {
+                etName.setText(fullName);
+            }
+        }
     }
 
     private void saveProfileChanges() {
         String name = etName.getText().toString().trim();
         String lastName = etLastName.getText().toString().trim();
+        String fullName = name + " " + lastName;
         String phone = etPhone.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
 
@@ -93,33 +121,15 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        ProfileUpdateRequest request = new ProfileUpdateRequest(name, lastName, phone, address);
-        ApiService apiService = ApiClient.getClient(this).create(ApiService.class);
-
-        apiService.updateProfile(request).enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(ProfileActivity.this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
-                    sessionManager.createLoginSession(sessionManager.getUserEmail(), name + " " + lastName,
-                            sessionManager.getUserToken(), sessionManager.getUserRole());
-                } else {
-                    String errorMsg = "Error: " + response.code();
-                    try (ResponseBody errorBody = response.errorBody()) {
-                        if (errorBody != null) {
-                            errorMsg += " - " + errorBody.string();
-                        }
-                    } catch (Exception e) {
-                        com.example.gymtrackmovil.utils.Logger.e("Error reading error body", e);
-                    }
-                    Toast.makeText(ProfileActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Falla red: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        String email = sessionManager.getUserEmail();
+        int rows = dbHelper.updateUserProfile(email, fullName, address, phone);
+        if (rows > 0) {
+            Toast.makeText(ProfileActivity.this, "Perfil actualizado correctamente en SQLite", Toast.LENGTH_SHORT)
+                    .show();
+            sessionManager.createLoginSession(email, fullName, sessionManager.getUserToken(),
+                    sessionManager.getUserRole());
+        } else {
+            Toast.makeText(ProfileActivity.this, "Error al actualizar perfil en SQLite", Toast.LENGTH_SHORT).show();
+        }
     }
 }

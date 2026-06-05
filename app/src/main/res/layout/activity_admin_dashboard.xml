@@ -152,6 +152,17 @@
                 <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_mylocation" android:tint="@color/text_secondary"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Miembros" android:textColor="@color/text_secondary" android:textSize="10sp"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/navAdminTrainers"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_add" android:tint="@color/text_secondary"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Entrenadores" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

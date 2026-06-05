@@ -49,35 +49,15 @@ public class RoutinesActivity extends AppCompatActivity {
         });
     }
     private void fetchRoutines() {
-        String token = sessionManager.getUserToken();
-        Logger.i("Fetch routines token present: " + (token != null));
+        Logger.i("Loading routines locally");
         
-        apiService.getRoutines().enqueue(new Callback<List<Routine>>() {
-            @Override
-            public void onResponse(Call<List<Routine>> call, Response<List<Routine>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Routine> routines = response.body();
-                    RoutinesAdapter adapter = new RoutinesAdapter(routines);
-                    recyclerView.setAdapter(adapter);
-                } else {
-                    String errorMsg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null) {
-                            errorMsg += " - " + response.errorBody().string();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    Logger.e("Error cargando rutinas: " + errorMsg, null);
-                    Toast.makeText(RoutinesActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Routine>> call, Throwable t) {
-                Logger.e("Error fetching routines", t);
-                Toast.makeText(RoutinesActivity.this,
-                        "Falla conexion: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        List<Routine> routines = new java.util.ArrayList<>();
+        routines.add(new Routine(1, "Rutina de Acondicionamiento General", "Lunes: Pecho y Tríceps. Miércoles: Espalda y Bíceps. Viernes: Pierna Completa."));
+        routines.add(new Routine(2, "Rutina Full Body (Cuerpo Completo)", "Tres días a la semana de entrenamiento dinámico multiarticular para hipertrofia y fuerza."));
+        routines.add(new Routine(3, "Rutina de Fuerza Máxima", "Entrenamiento enfocado en Powerlifting: Sentadilla, Press de Banca y Peso Muerto con bajas repeticiones."));
+        routines.add(new Routine(4, "Rutina de Definición / Cardio", "Ejercicios metabólicos de alta intensidad (HIIT) combinados con pesas de menor carga."));
+        
+        RoutinesAdapter adapter = new RoutinesAdapter(routines);
+        recyclerView.setAdapter(adapter);
     }
 }

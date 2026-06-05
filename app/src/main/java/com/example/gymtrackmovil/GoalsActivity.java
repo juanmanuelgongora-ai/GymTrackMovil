@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.api.ApiClient;
 import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.Goal;
+import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
 import retrofit2.Call;
@@ -21,7 +23,8 @@ public class GoalsActivity extends AppCompatActivity {
 
     private SessionManager session;
     private TextView tvUserInitials;
-    private ApiService apiService;
+    private android.widget.LinearLayout llGoalsList;
+    private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +32,9 @@ public class GoalsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_goals);
 
         session = new SessionManager(this);
-        apiService = ApiClient.getClient(this).create(ApiService.class);
+        dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         tvUserInitials = findViewById(R.id.tvUserInitials);
+        llGoalsList = findViewById(R.id.llGoalsList);
 
         setupUI();
         fetchGoals();
@@ -73,19 +77,89 @@ public class GoalsActivity extends AppCompatActivity {
     }
 
     private void fetchGoals() {
-        apiService.getGoals().enqueue(new Callback<List<Goal>>() {
-            @Override
-            public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // Update goals list UI
-                }
-            }
+        String email = session.getUserEmail();
 
-            @Override
-            public void onFailure(Call<List<Goal>> call, Throwable t) {
-                Toast.makeText(GoalsActivity.this, "Error al cargar objetivos", Toast.LENGTH_SHORT).show();
+        // Seed default goals into SQLite on first run (only if none exist yet)
+        android.database.Cursor check = dbHelper.getUserGoals(email);
+        boolean hasGoals = (check != null && check.getCount() > 0);
+        if (check != null) check.close();
+
+        if (!hasGoals) {
+            dbHelper.saveGoal(email, "Perder Peso Corporal", "Bajar a 80kg", 60, "2026-12-31");
+            dbHelper.saveGoal(email, "Ganar Masa Muscular", "Aumentar 5kg de músculo", 40, "2026-12-31");
+            dbHelper.saveGoal(email, "Resistencia Cardiovascular", "Correr 10k sin parar", 80, "2026-09-30");
+        }
+
+        // Load ALL goals from SQLite and render them
+        List<Goal> goalsList = new java.util.ArrayList<>();
+        android.database.Cursor cursor = dbHelper.getUserGoals(email);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int tIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_TITLE);
+                int taIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_TARGET);
+                int pIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_PROGRESS);
+                int dIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_DEADLINE);
+                goalsList.add(new Goal(
+                        tIdx  != -1 ? cursor.getString(tIdx)  : "",
+                        taIdx != -1 ? cursor.getString(taIdx) : "",
+                        pIdx  != -1 ? cursor.getInt(pIdx)     : 0,
+                        dIdx  != -1 ? cursor.getString(dIdx)  : ""
+                ));
             }
-        });
+            cursor.close();
+        }
+        updateGoalsUI(goalsList);
+    }
+
+
+    private void updateGoalsUI(List<Goal> goalsList) {
+        if (llGoalsList == null) return;
+        llGoalsList.removeAllViews();
+
+        int totalProgressSum = 0;
+
+        for (int i = 0; i < goalsList.size(); i++) {
+            Goal goal = goalsList.get(i);
+            totalProgressSum += goal.getProgress();
+
+            View itemView = LayoutInflater.from(this).inflate(R.layout.item_goal_progress, llGoalsList, false);
+            TextView tvGoalName = itemView.findViewById(R.id.tvGoalName);
+            TextView tvGoalProgressPercent = itemView.findViewById(R.id.tvGoalProgressPercent);
+            ProgressBar pbGoal = itemView.findViewById(R.id.pbGoal);
+
+            tvGoalName.setText(goal.getTitle());
+            tvGoalProgressPercent.setText(goal.getProgress() + "%");
+            pbGoal.setProgress(goal.getProgress());
+
+            llGoalsList.addView(itemView);
+
+            // Add separator view if not the last item
+            if (i < goalsList.size() - 1) {
+                View spacer = new View(this);
+                spacer.setLayoutParams(new android.widget.LinearLayout.LayoutParams(1, (int) (12 * getResources().getDisplayMetrics().density)));
+                llGoalsList.addView(spacer);
+            }
+        }
+
+        // Calculate and update General Progress Card
+        if (!goalsList.isEmpty()) {
+            int averageProgress = totalProgressSum / goalsList.size();
+            TextView tvGenPercent = findViewById(R.id.cardGeneralProgress).findViewById(android.R.id.text1); // Let's check how the percentage is defined in activity_goals.xml
+            // Looking at activity_goals.xml, the percentage text doesn't have an ID, but it is the second child of the linear layout inside cardGeneralProgress. Let's find it.
+            try {
+                androidx.cardview.widget.CardView card = findViewById(R.id.cardGeneralProgress);
+                View child = card.getChildAt(0);
+                if (child instanceof android.widget.LinearLayout) {
+                    android.widget.LinearLayout ll = (android.widget.LinearLayout) child;
+                    TextView tvProgressPercent = (TextView) ll.getChildAt(1);
+                    ProgressBar pbProgressGen = (ProgressBar) ll.getChildAt(2);
+                    tvProgressPercent.setText(averageProgress + "%");
+                    pbProgressGen.setProgress(averageProgress);
+                }
+            } catch (Exception e) {
+                Logger.e("Error updating general progress card UI", e);
+            }
+        }
     }
 
     private void showAddGoalDialog() {
@@ -98,8 +172,8 @@ public class GoalsActivity extends AppCompatActivity {
 
         builder.setView(view);
         builder.setPositiveButton("Crear", (dialog, which) -> {
-            String title = etTitle.getText().toString();
-            String target = etTarget.getText().toString();
+            String title = etTitle.getText().toString().trim();
+            String target = etTarget.getText().toString().trim();
             if (!title.isEmpty()) {
                 saveGoal(new Goal(title, target, 0, "2026-12-31"));
             }
@@ -109,27 +183,13 @@ public class GoalsActivity extends AppCompatActivity {
     }
 
     private void saveGoal(Goal goal) {
-        apiService.addGoal(goal).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(GoalsActivity.this, "Objetivo creado", Toast.LENGTH_SHORT).show();
-                    fetchGoals();
-                } else {
-                    String msg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null)
-                            msg += " " + response.errorBody().string();
-                    } catch (Exception e) {
-                    }
-                    Toast.makeText(GoalsActivity.this, msg, Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(GoalsActivity.this, "Falla red: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        String email = session.getUserEmail();
+        long id = dbHelper.saveGoal(email, goal.getTitle(), goal.getTarget(), goal.getProgress(), goal.getDeadline());
+        if (id != -1) {
+            Toast.makeText(GoalsActivity.this, "Objetivo creado localmente", Toast.LENGTH_SHORT).show();
+            fetchGoals();
+        } else {
+            Toast.makeText(GoalsActivity.this, "Error al crear objetivo en SQLite", Toast.LENGTH_SHORT).show();
+        }
     }
 }
