@@ -1,13 +1,16 @@
 package com.example.gymtrackmovil;
+
 import android.os.Bundle;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.utils.Logger;
 import android.widget.TextView;
 import com.example.gymtrackmovil.utils.SessionManager;
+
 public class MainActivity extends AppCompatActivity {
     private SessionManager session;
     private TextView tvUserInitials, tvWelcomeHeader;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +27,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.navGoals).setOnClickListener(v -> startActivity(new Intent(this, GoalsActivity.class)));
         findViewById(R.id.navProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         tvUserInitials.setOnClickListener(v -> showLogoutConfirmDialog());
+
+        // Statistics shortcut (accessible from welcome card if present in layout)
+        android.view.View statsBtn = findViewById(R.id.btnViewStats);
+        if (statsBtn != null) {
+            statsBtn.setOnClickListener(v -> startActivity(new Intent(this, StatisticsActivity.class)));
+        }
     }
+
     private void updateDynamicUI() {
         String name = session.getUserName();
         tvWelcomeHeader.setText(getString(R.string.welcome_msg, name));
@@ -37,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
         tvUserInitials.setText(initials.toUpperCase());
     }
+
     private void showLogoutConfirmDialog() {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Cerrar Sesión")
@@ -50,4 +61,3 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 }
-
