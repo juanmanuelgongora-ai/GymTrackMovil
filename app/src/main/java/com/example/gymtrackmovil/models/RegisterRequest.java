@@ -1,7 +1,5 @@
 package com.example.gymtrackmovil.models;
-
 import com.google.gson.annotations.SerializedName;
-
 public class RegisterRequest {
     @SerializedName("nombre")
     private String name;
@@ -27,7 +25,6 @@ public class RegisterRequest {
     private String phone;
     @SerializedName("telefono_familiar")
     private String familyPhone;
-
     public RegisterRequest(String name, String lastName, String email, String password, String password_confirmation,
             int age,
             String sex, String eps, String goal,
@@ -46,3 +43,5 @@ public class RegisterRequest {
         this.familyPhone = familyPhone;
     }
 }
+
+

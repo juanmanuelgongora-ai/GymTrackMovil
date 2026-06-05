@@ -1,51 +1,33 @@
 package com.example.gymtrackmovil;
-
 import android.os.Bundle;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.utils.Logger;
 import android.widget.TextView;
 import com.example.gymtrackmovil.utils.SessionManager;
-
 public class MainActivity extends AppCompatActivity {
-
     private SessionManager session;
     private TextView tvUserInitials, tvWelcomeHeader;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Logger.init(this);
         session = new SessionManager(this);
-
         tvUserInitials = findViewById(R.id.tvUserInitials);
         tvWelcomeHeader = findViewById(R.id.tvWelcomeHeader);
-
-        // Personalizacion
         updateDynamicUI();
-
-        // Navegacion
         findViewById(R.id.navHome).setOnClickListener(v -> {
         });
-
         findViewById(R.id.navRoutine).setOnClickListener(v -> startActivity(new Intent(this, RoutinesActivity.class)));
-
         findViewById(R.id.navProgress).setOnClickListener(v -> startActivity(new Intent(this, ProgressActivity.class)));
-
         findViewById(R.id.navGoals).setOnClickListener(v -> startActivity(new Intent(this, GoalsActivity.class)));
-
         findViewById(R.id.navProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
-
         tvUserInitials.setOnClickListener(v -> showLogoutConfirmDialog());
     }
-
     private void updateDynamicUI() {
         String name = session.getUserName();
-
         tvWelcomeHeader.setText(getString(R.string.welcome_msg, name));
-
         String initials;
         if (name.contains(" ")) {
             String[] parts = name.split(" ");
@@ -55,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         }
         tvUserInitials.setText(initials.toUpperCase());
     }
-
     private void showLogoutConfirmDialog() {
         new android.app.AlertDialog.Builder(this)
                 .setTitle("Cerrar Sesión")
@@ -69,3 +50,4 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 }
+

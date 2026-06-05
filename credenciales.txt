@@ -1,0 +1,7 @@
+Credenciales de Prueba para GymTrack Móvil:
+
+1. Rol Administrador:
+   - Email: admin@gymtrack.com
+   - Contraseña: admin123
+
+(Para Entrenadores o Clientes, el Administrador puede crearlos directamente desde la aplicación y quedarán guardados en la base de datos local SQLite interna de la app).

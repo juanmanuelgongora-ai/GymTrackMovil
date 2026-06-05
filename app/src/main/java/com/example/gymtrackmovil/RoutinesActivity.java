@@ -6,31 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gymtrackmovil.adapters.RoutinesAdapter;
-import com.example.gymtrackmovil.api.ApiClient;
-import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.Routine;
 import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 public class RoutinesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private ApiService apiService;
-    private SessionManager sessionManager; // Declarado para evitar error de compilación
+    private SessionManager sessionManager; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routines);
         Logger.init(this);
-        sessionManager = new SessionManager(this); // Inicializado
-        
+        sessionManager = new SessionManager(this); 
         recyclerView = findViewById(R.id.rvRoutines);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        apiService = ApiClient.getClient(this).create(ApiService.class);
         fetchRoutines();
-        // Navigation (Solucionado y fusionado con master)
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -49,35 +40,14 @@ public class RoutinesActivity extends AppCompatActivity {
         });
     }
     private void fetchRoutines() {
-        String token = sessionManager.getUserToken();
-        Logger.i("Fetch routines token present: " + (token != null));
-        
-        apiService.getRoutines().enqueue(new Callback<List<Routine>>() {
-            @Override
-            public void onResponse(Call<List<Routine>> call, Response<List<Routine>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Routine> routines = response.body();
-                    RoutinesAdapter adapter = new RoutinesAdapter(routines);
-                    recyclerView.setAdapter(adapter);
-                } else {
-                    String errorMsg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null) {
-                            errorMsg += " - " + response.errorBody().string();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    Logger.e("Error cargando rutinas: " + errorMsg, null);
-                    Toast.makeText(RoutinesActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Routine>> call, Throwable t) {
-                Logger.e("Error fetching routines", t);
-                Toast.makeText(RoutinesActivity.this,
-                        "Falla conexion: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        Logger.i("Loading routines locally");
+        List<Routine> routines = new java.util.ArrayList<>();
+        routines.add(new Routine(1, "Rutina de Acondicionamiento General", "Lunes: Pecho y Tríceps. Miércoles: Espalda y Bíceps. Viernes: Pierna Completa."));
+        routines.add(new Routine(2, "Rutina Full Body (Cuerpo Completo)", "Tres días a la semana de entrenamiento dinámico multiarticular para hipertrofia y fuerza."));
+        routines.add(new Routine(3, "Rutina de Fuerza Máxima", "Entrenamiento enfocado en Powerlifting: Sentadilla, Press de Banca y Peso Muerto con bajas repeticiones."));
+        routines.add(new Routine(4, "Rutina de Definición / Cardio", "Ejercicios metabólicos de alta intensidad (HIIT) combinados con pesas de menor carga."));
+        RoutinesAdapter adapter = new RoutinesAdapter(routines);
+        recyclerView.setAdapter(adapter);
     }
 }
+

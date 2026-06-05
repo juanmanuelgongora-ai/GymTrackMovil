@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.api.ApiClient;
 import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.ProgressEntry;
+import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
 import retrofit2.Call;
@@ -92,7 +93,7 @@ public class ProgressActivity extends AppCompatActivity {
         if (progressList.isEmpty())
             return;
 
-        // Get latest entry
+        // Assuming list is sorted by date descending, get latest
         ProgressEntry latest = progressList.get(0);
 
         // Update Weight Card
@@ -105,7 +106,8 @@ public class ProgressActivity extends AppCompatActivity {
         // Update BMI Card
         View cardBMI = findViewById(R.id.cardBMI);
         ((TextView) cardBMI.findViewById(R.id.tvStatLabel)).setText("IMC");
-        double bmi = latest.getWeight() / Math.pow(latest.getHeight() / 100.0, 2);
+        double h = latest.getHeight() > 0 ? latest.getHeight() / 100.0 : 1.70;
+        double bmi = latest.getWeight() / (h * h);
         ((TextView) cardBMI.findViewById(R.id.tvStatValue)).setText(String.format("%.1f", bmi));
         ((android.widget.ImageView) cardBMI.findViewById(R.id.ivStatIcon))
                 .setImageResource(android.R.drawable.ic_menu_info_details);
@@ -140,7 +142,11 @@ public class ProgressActivity extends AppCompatActivity {
                 double weight = Double.parseDouble(etWeight.getText().toString());
                 double fat = Double.parseDouble(etBodyFat.getText().toString());
                 double muscle = Double.parseDouble(etMuscleMass.getText().toString());
-                saveProgress(new ProgressEntry(weight, 170.0, fat, muscle, "2026-05-30"));
+
+                String currentDate = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                        .format(new java.util.Date());
+                ProgressEntry entry = new ProgressEntry(weight, 170.0, fat, muscle, currentDate);
+                saveProgress(entry);
             } catch (Exception e) {
                 Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show();
             }
@@ -157,19 +163,13 @@ public class ProgressActivity extends AppCompatActivity {
                     Toast.makeText(ProgressActivity.this, "Medición guardada", Toast.LENGTH_SHORT).show();
                     fetchProgressData();
                 } else {
-                    String msg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null)
-                            msg += " " + response.errorBody().string();
-                    } catch (Exception e) {
-                    }
-                    Toast.makeText(ProgressActivity.this, msg, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProgressActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ProgressActivity.this, "Falla red: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ProgressActivity.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

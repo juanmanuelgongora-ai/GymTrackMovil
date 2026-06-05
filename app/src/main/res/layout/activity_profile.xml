@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/dark_background"
     android:padding="24dp">
-
     <TextView
         android:id="@+id/tvProfileTitle"
         android:layout_width="wrap_content"
@@ -16,8 +15,6 @@
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- User Info Form -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,19 +22,16 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btnSaveProfile"
         app:layout_constraintTop_toBottomOf="@id/tvProfileTitle">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nombre"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/etProfileName"
                 android:layout_width="match_parent"
@@ -48,7 +42,6 @@
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="@color/white" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +49,6 @@
                 android:text="Apellido"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/etProfileLastName"
                 android:layout_width="match_parent"
@@ -67,7 +59,6 @@
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="@color/white" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +66,6 @@
                 android:text="Email (Solo lectura)"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/etProfileEmail"
                 android:layout_width="match_parent"
@@ -86,7 +76,6 @@
                 android:hint="Email"
                 android:padding="16dp"
                 android:textColor="@color/text_secondary" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +83,6 @@
                 android:text="Teléfono"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/etProfilePhone"
                 android:layout_width="match_parent"
@@ -105,7 +93,6 @@
                 android:inputType="phone"
                 android:padding="16dp"
                 android:textColor="@color/white" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +100,6 @@
                 android:text="Dirección"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/etProfileAddress"
                 android:layout_width="match_parent"
@@ -124,7 +110,6 @@
                 android:inputType="textPostalAddress"
                 android:padding="16dp"
                 android:textColor="@color/white" />
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
@@ -137,7 +122,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSaveProfile"
         android:layout_width="match_parent"
@@ -149,8 +133,6 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav" />
-
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -162,31 +144,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <LinearLayout android:id="@+id/navHome" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_today" android:tint="@color/text_secondary"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Inicio" android:textColor="@color/text_secondary" android:textSize="10sp"/>
         </LinearLayout>
-
         <LinearLayout android:id="@+id/navRoutine" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" android:tint="@color/text_secondary"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rutina" android:textColor="@color/text_secondary" android:textSize="10sp"/>
         </LinearLayout>
-
         <LinearLayout android:id="@+id/navProgress" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_directions" android:tint="@color/text_secondary"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Progreso" android:textColor="@color/text_secondary" android:textSize="10sp"/>
         </LinearLayout>
-
         <LinearLayout android:id="@+id/navGoals" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" android:tint="@color/text_secondary"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Objetivos" android:textColor="@color/text_secondary" android:textSize="10sp"/>
         </LinearLayout>
-
         <LinearLayout android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_edit" android:tint="@color/orange_primary"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perfil" android:textColor="@color/orange_primary" android:textSize="10sp"/>
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+

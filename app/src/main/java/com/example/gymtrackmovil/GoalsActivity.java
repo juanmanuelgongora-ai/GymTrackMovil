@@ -34,19 +34,8 @@ public class GoalsActivity extends AppCompatActivity {
         session = new SessionManager(this);
         apiService = ApiClient.getClient(this).create(ApiService.class);
         tvUserInitials = findViewById(R.id.tvUserInitials);
-        tvGeneralProgressPercent = findViewById(R.id.cardGeneralProgress).findViewById(R.id.tvGeneralProgressPercent); // Wait,
-                                                                                                                       // I
-                                                                                                                       // need
-                                                                                                                       // to
-                                                                                                                       // check
-                                                                                                                       // the
-                                                                                                                       // IDs
-                                                                                                                       // in
-                                                                                                                       // activity_goals.xml
-                                                                                                                       // again
-                                                                                                                       // or
-                                                                                                                       // add
-                                                                                                                       // them
+
+        tvGeneralProgressPercent = findViewById(R.id.cardGeneralProgress).findViewById(R.id.tvGeneralProgressPercent);
         pbGeneralProgress = findViewById(R.id.cardGeneralProgress).findViewById(R.id.pbGeneralProgress);
 
         rvGoals = findViewById(R.id.rvGoals);

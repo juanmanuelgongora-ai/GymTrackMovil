@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    android:orientation="vertical"
+    android:padding="24dp">
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_revert"
+        android:tint="@color/white"
+        android:layout_marginBottom="16dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear Entrenador"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ingresa los datos del nuevo entrenador."
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp"/>
+    <EditText
+        android:id="@+id/etTrainerName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_bg"
+        android:hint="Nombre Completo"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/white"
+        android:paddingStart="16dp"
+        android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/etTrainerEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_bg"
+        android:hint="Correo Electrónico"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/white"
+        android:paddingStart="16dp"
+        android:layout_marginBottom="16dp"/>
+    <EditText
+        android:id="@+id/etTrainerPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_bg"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/white"
+        android:paddingStart="16dp"
+        android:layout_marginBottom="32dp"/>
+    <Button
+        android:id="@+id/btnSaveTrainer"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/orange_primary"
+        android:text="Guardar Entrenador"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+    <Button
+        android:id="@+id/btnCancelTrainer"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="@color/text_secondary"
+        android:text="Cancelar"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+</LinearLayout>
+
