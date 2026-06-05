@@ -6,18 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.gymtrackmovil.adapters.RoutinesAdapter;
-import com.example.gymtrackmovil.api.ApiClient;
-import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.Routine;
 import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 public class RoutinesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private ApiService apiService;
     private SessionManager sessionManager; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +21,6 @@ public class RoutinesActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this); 
         recyclerView = findViewById(R.id.rvRoutines);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        apiService = ApiClient.getClient(this).create(ApiService.class);
         fetchRoutines();
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
@@ -57,3 +50,4 @@ public class RoutinesActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 }
+

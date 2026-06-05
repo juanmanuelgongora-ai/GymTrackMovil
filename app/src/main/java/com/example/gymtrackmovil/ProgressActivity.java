@@ -7,15 +7,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.gymtrackmovil.api.ApiClient;
-import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.ProgressEntry;
 import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 public class ProgressActivity extends AppCompatActivity {
     private SessionManager session;
     private TextView tvUserInitials;
@@ -114,4 +109,5 @@ public class ProgressActivity extends AppCompatActivity {
         }
     }
 }
+
 

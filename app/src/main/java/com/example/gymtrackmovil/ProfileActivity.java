@@ -6,13 +6,8 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.gymtrackmovil.api.ApiClient;
-import com.example.gymtrackmovil.api.ApiService;
 import com.example.gymtrackmovil.models.ProfileUpdateRequest;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 public class ProfileActivity extends AppCompatActivity {
     private EditText etName, etLastName, etEmail, etPhone, etAddress;
     private SessionManager sessionManager;
@@ -113,4 +108,5 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
+
 

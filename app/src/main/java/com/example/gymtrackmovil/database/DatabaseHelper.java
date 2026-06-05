@@ -1,8 +1,10 @@
 package com.example.gymtrackmovil.database;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GymTrack.db";
     private static final int DATABASE_VERSION = 4;
@@ -80,9 +82,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_GOAL_TARGET + " TEXT,"
             + KEY_GOAL_PROGRESS + " INTEGER,"
             + KEY_GOAL_DEADLINE + " TEXT" + ")";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ROUTINES);
@@ -91,13 +95,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_METRICS);
         db.execSQL(CREATE_TABLE_GOALS);
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 4) {
-            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_ROLE + " TEXT DEFAULT 'cliente'"); } catch (Exception e) {  }
-            try { db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_TRAINER_EMAIL + " TEXT"); } catch (Exception e) {  }
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_ROLE + " TEXT DEFAULT 'cliente'");
+            } catch (Exception e) {
+            }
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + KEY_USER_TRAINER_EMAIL + " TEXT");
+            } catch (Exception e) {
+            }
         }
     }
+
     public long saveUser(String name, String email, String password, String goal, String address, int age,
             String eps, String phone, String familyPhone,
             double weight, double height, String sex) {
@@ -119,48 +131,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
+
     public boolean checkUserCredentials(String email, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.query(TABLE_USERS,
-                new String[]{KEY_ID},
+                new String[] { KEY_ID },
                 KEY_USER_EMAIL + "=? AND " + KEY_USER_PASSWORD + "=?",
-                new String[]{email, password},
+                new String[] { email, password },
                 null, null, null);
         boolean exists = (cursor != null && cursor.getCount() > 0);
-        if (cursor != null) cursor.close();
+        if (cursor != null)
+            cursor.close();
         db.close();
         return exists;
     }
+
     public boolean checkUserExists(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.query(TABLE_USERS,
-                new String[]{KEY_ID},
+                new String[] { KEY_ID },
                 KEY_USER_EMAIL + "=?",
-                new String[]{email},
+                new String[] { email },
                 null, null, null);
         boolean exists = (cursor != null && cursor.getCount() > 0);
-        if (cursor != null) cursor.close();
+        if (cursor != null)
+            cursor.close();
         db.close();
         return exists;
     }
+
     public android.database.Cursor getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS,
                 null,
                 KEY_USER_EMAIL + "=?",
-                new String[]{email},
+                new String[] { email },
                 null, null, null);
     }
+
     public int updateUserProfile(String email, String name, String address, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_NAME, name);
         values.put(KEY_USER_ADDRESS, address);
         values.put(KEY_USER_PHONE, phone);
-        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[]{email});
+        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[] { email });
         db.close();
         return rows;
     }
+
     public void addLog(String type, String message) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -169,6 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_LOGS, null, values);
         db.close();
     }
+
     public long saveMetric(String userEmail, double weight, double bodyFat, double muscleMass, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -181,14 +201,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
+
     public android.database.Cursor getUserMetrics(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_METRICS,
                 null,
                 KEY_METRIC_EMAIL + "=?",
-                new String[]{userEmail},
+                new String[] { userEmail },
                 null, null, KEY_ID + " DESC");
     }
+
     public long saveGoal(String userEmail, String title, String target, int progress, String deadline) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -201,14 +223,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
+
     public android.database.Cursor getUserGoals(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_GOALS,
                 null,
                 KEY_GOAL_EMAIL + "=?",
-                new String[]{userEmail},
+                new String[] { userEmail },
                 null, null, KEY_ID + " ASC");
     }
+
     public long saveUserWithRole(String name, String email, String password, String goal,
             String address, int age, String eps, String phone, String familyPhone,
             double weight, double height, String sex, String role) {
@@ -231,61 +255,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return id;
     }
+
     public android.database.Cursor getAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null, null, null, null, null, KEY_ID + " ASC");
     }
+
     public android.database.Cursor getUsersByRole(String role) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null,
-                KEY_USER_ROLE + "=?", new String[]{role},
+                KEY_USER_ROLE + "=?", new String[] { role },
                 null, null, KEY_USER_NAME + " ASC");
     }
+
     public android.database.Cursor getClientsByTrainer(String trainerEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.query(TABLE_USERS, null,
-                KEY_USER_TRAINER_EMAIL + "=?", new String[]{trainerEmail},
+                KEY_USER_TRAINER_EMAIL + "=?", new String[] { trainerEmail },
                 null, null, KEY_USER_NAME + " ASC");
     }
+
     public int updateUserRole(String email, String role) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_ROLE, role);
-        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[]{email});
+        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[] { email });
         db.close();
         return rows;
     }
+
     public int assignTrainer(String clientEmail, String trainerEmail) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_TRAINER_EMAIL, trainerEmail);
-        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[]{clientEmail});
+        int rows = db.update(TABLE_USERS, values, KEY_USER_EMAIL + "=?", new String[] { clientEmail });
         db.close();
         return rows;
     }
+
     public int countUsersByRole(String role) {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) FROM " + TABLE_USERS + " WHERE " + KEY_USER_ROLE + "=?",
-                new String[]{role});
+                new String[] { role });
         int count = 0;
         if (cursor != null) {
-            if (cursor.moveToFirst()) count = cursor.getInt(0);
+            if (cursor.moveToFirst())
+                count = cursor.getInt(0);
             cursor.close();
         }
         db.close();
         return count;
     }
+
     public int countAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         android.database.Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_USERS, null);
         int count = 0;
         if (cursor != null) {
-            if (cursor.moveToFirst()) count = cursor.getInt(0);
+            if (cursor.moveToFirst())
+                count = cursor.getInt(0);
             cursor.close();
         }
         db.close();
         return count;
     }
 }
-
