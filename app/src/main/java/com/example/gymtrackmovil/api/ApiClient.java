@@ -20,7 +20,7 @@ public class ApiClient {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .addInterceptor(chain -> {
-                    String token = sessionManager.getAuthToken();
+                    String token = sessionManager.getUserToken();
                     okhttp3.Request.Builder builder = chain.request().newBuilder();
                     if (token != null && !token.isEmpty()) {
                         builder.addHeader("Authorization", "Bearer " + token);

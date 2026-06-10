@@ -6,6 +6,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gymtrackmovil.R;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.util.Log;
 import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.NetworkUtils;
 
@@ -143,4 +149,5 @@ public class LoginActivity extends AppCompatActivity {
 
         builder.show();
     }
+
 }

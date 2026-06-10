@@ -28,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.navProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         tvUserInitials.setOnClickListener(v -> showLogoutConfirmDialog());
 
-        // Statistics shortcut (accessible from welcome card if present in layout)
-        android.view.View statsBtn = findViewById(R.id.btnViewStats);
-        if (statsBtn != null) {
-            statsBtn.setOnClickListener(v -> startActivity(new Intent(this, StatisticsActivity.class)));
-        }
     }
 
     private void updateDynamicUI() {
