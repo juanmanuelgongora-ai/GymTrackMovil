@@ -94,6 +94,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_METRICS);
         db.execSQL(CREATE_TABLE_GOALS);
+
+        // Administrador
+        db.execSQL("INSERT INTO " + TABLE_USERS + " (" +
+                KEY_USER_NAME + ", " + KEY_USER_EMAIL + ", " + KEY_USER_PASSWORD + ", " + KEY_USER_ROLE +
+                ") VALUES ('Administrador', 'admin@gymtrack.com', 'admin123', 'admin')");
+
+        // Entrenador
+        db.execSQL("INSERT INTO " + TABLE_USERS + " (" +
+                KEY_USER_NAME + ", " + KEY_USER_EMAIL + ", " + KEY_USER_PASSWORD + ", " + KEY_USER_ROLE +
+                ") VALUES ('Entrenador', 'entrenador@gymtrack.com', 'entrenador123', 'entrenador')");
+
+        // Cliente de prueba
+        db.execSQL("INSERT INTO " + TABLE_USERS + " (" +
+                KEY_USER_NAME + ", " + KEY_USER_EMAIL + ", " + KEY_USER_PASSWORD + ", " + KEY_USER_ROLE +
+                ") VALUES ('Cliente', 'cliente@gymtrack.com', 'cliente123', 'cliente')");
     }
 
     @Override
