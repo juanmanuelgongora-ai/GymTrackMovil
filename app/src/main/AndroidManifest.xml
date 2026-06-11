@@ -53,6 +53,18 @@
         <activity
             android:name=".AdminCreateTrainerActivity"
             android:exported="false" />
+        <activity
+            android:name=".TrainerClientsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TrainerRoutinesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TrainerProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TrainerEditProfileActivity"
+            android:exported="false" />
 
 
     </application>
