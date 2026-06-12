@@ -111,17 +111,17 @@ public class TrainerClientsActivity extends AppCompatActivity {
         LinearLayout navPerfil = findViewById(R.id.navPerfil);
 
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, TrainerDashboardActivity.class));
             finish();
         });
 
         navRutinas.setOnClickListener(v -> {
-            startActivity(new Intent(this, RoutinesActivity.class));
+            startActivity(new Intent(this, TrainerRoutinesActivity.class));
             finish();
         });
 
         navPerfil.setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, TrainerProfileActivity.class));
             finish();
         });
     }

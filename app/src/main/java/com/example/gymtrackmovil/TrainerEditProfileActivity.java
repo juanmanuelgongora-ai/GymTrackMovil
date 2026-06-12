@@ -75,7 +75,7 @@ public class TrainerEditProfileActivity extends AppCompatActivity {
 
     private void setupBottomNav() {
         findViewById(R.id.navHome).setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, TrainerDashboardActivity.class));
             finish();
         });
 

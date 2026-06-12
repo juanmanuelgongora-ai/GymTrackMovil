@@ -92,7 +92,7 @@ public class TrainerRoutinesActivity extends AppCompatActivity {
 
     private void setupBottomNav() {
         findViewById(R.id.navHome).setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, TrainerDashboardActivity.class));
             finish();
         });
 
@@ -102,7 +102,7 @@ public class TrainerRoutinesActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.navPerfil).setOnClickListener(v -> {
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, TrainerProfileActivity.class));
             finish();
         });
     }
