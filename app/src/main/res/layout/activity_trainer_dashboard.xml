@@ -140,6 +140,7 @@
                         android:tint="#FF6B35" />
 
                     <TextView
+                        android:id="@+id/tvStatClientes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -173,6 +174,7 @@
                         android:tint="#FF6B35" />
 
                     <TextView
+                        android:id="@+id/tvStatSesionesHoy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -206,6 +208,7 @@
                         android:tint="#FF6B35" />
 
                     <TextView
+                        android:id="@+id/tvStatRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -226,6 +229,7 @@
 
             <!-- Próxima Sesión -->
             <LinearLayout
+                android:id="@+id/llNextSessionCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -234,6 +238,7 @@
                 android:padding="20dp">
 
                 <TextView
+                    android:id="@+id/tvNextSessionLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Próxima Sesión"
@@ -257,6 +262,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvNextSessionTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🕐 11:00 AM"
@@ -264,6 +270,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/tvNextSessionType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -282,6 +289,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tvBtnIniciarSesion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Iniciar Sesión"
@@ -343,6 +351,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/tvSesionesCompletadasWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="18/20"
@@ -381,6 +390,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/tvHorasEntrenadasWeek"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="24/30"

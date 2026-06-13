@@ -173,6 +173,7 @@
                         android:tint="#A0A0A0" />
 
                     <TextView
+                        android:id="@+id/tvProfileLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -189,6 +190,7 @@
                         android:tint="#A0A0A0" />
 
                     <TextView
+                        android:id="@+id/tvProfileExperience"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -227,6 +229,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/tvProfileStatClientes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -253,6 +256,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/tvProfileStatRating"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -279,6 +283,7 @@
                             android:textSize="12sp" />
 
                         <TextView
+                            android:id="@+id/tvProfileStatSesiones"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
@@ -369,6 +374,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvProfileEmail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="roberto@gymtrack.com"
@@ -399,6 +405,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvProfilePhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="+34 611 222 333"
@@ -428,6 +435,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvProfileSpecialty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Fitness &amp; Musculación"
@@ -470,6 +478,7 @@
 
                     <!-- Cert 1 -->
                     <LinearLayout
+                        android:id="@+id/llCert1"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginTop="12dp"
@@ -492,6 +501,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvCert1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -502,6 +512,7 @@
 
                     <!-- Cert 2 -->
                     <LinearLayout
+                        android:id="@+id/llCert2"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
@@ -524,6 +535,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvCert2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -534,6 +546,7 @@
 
                     <!-- Cert 3 -->
                     <LinearLayout
+                        android:id="@+id/llCert3"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
@@ -556,6 +569,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvCert3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"

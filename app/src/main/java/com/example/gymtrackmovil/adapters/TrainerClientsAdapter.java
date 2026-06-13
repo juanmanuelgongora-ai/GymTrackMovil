@@ -17,12 +17,14 @@ import java.util.List;
 public class TrainerClientsAdapter extends RecyclerView.Adapter<TrainerClientsAdapter.ClientViewHolder> {
 
     public static class Client {
+        public String email;
         public String name;
         public String plan;
         public int progressPercent;
         public String lastSession;
 
-        public Client(String name, String plan, int progressPercent, String lastSession) {
+        public Client(String email, String name, String plan, int progressPercent, String lastSession) {
+            this.email = email;
             this.name = name;
             this.plan = plan;
             this.progressPercent = progressPercent;

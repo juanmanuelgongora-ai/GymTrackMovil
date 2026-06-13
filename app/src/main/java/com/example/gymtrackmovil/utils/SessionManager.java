@@ -1,6 +1,7 @@
 package com.example.gymtrackmovil.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 public class SessionManager {
     private static final String PREF_NAME = "GymTrackPrefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
@@ -45,6 +46,10 @@ public class SessionManager {
     }
     public String getUserName() {
         return pref.getString(KEY_NAME, "Usuario");
+    }
+    public void updateUserName(String name) {
+        editor.putString(KEY_NAME, name);
+        editor.commit();
     }
     public void updateServerIp(String ip) {
         editor.putString(KEY_SERVER_IP, ip);
