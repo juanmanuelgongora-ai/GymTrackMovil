@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "GymTrack.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     public static final String TABLE_ROUTINES = "routines";
     public static final String TABLE_LOGS = "app_logs";
     public static final String TABLE_USERS = "users";
@@ -18,13 +18,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String KEY_ID = "id";
     public static final String KEY_ROUTINE_NAME = "name";
     public static final String KEY_ROUTINE_DESC = "description";
+    public static final String KEY_ROUTINE_TRAINER_EMAIL = "trainer_email";
+    public static final String KEY_ROUTINE_EXERCISE_COUNT = "exercise_count";
+    public static final String KEY_ROUTINE_DURATION_MIN = "duration_min";
+    public static final String TABLE_CLIENT_ROUTINES = "client_routines";
+    public static final String KEY_CR_CLIENT_EMAIL = "client_email";
+    public static final String KEY_CR_ROUTINE_ID = "routine_id";
+    public static final String KEY_CR_ASSIGNED_DATE = "assigned_date";
     public static final String KEY_LOG_TYPE = "type";
     public static final String KEY_LOG_MSG = "message";
     public static final String KEY_LOG_TIMESTAMP = "timestamp";
     private static final String CREATE_TABLE_ROUTINES = "CREATE TABLE " + TABLE_ROUTINES + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_ROUTINE_NAME + " TEXT,"
-            + KEY_ROUTINE_DESC + " TEXT" + ")";
+            + KEY_ROUTINE_DESC + " TEXT,"
+            + KEY_ROUTINE_TRAINER_EMAIL + " TEXT,"
+            + KEY_ROUTINE_EXERCISE_COUNT + " INTEGER DEFAULT 0,"
+            + KEY_ROUTINE_DURATION_MIN + " INTEGER DEFAULT 0" + ")";
+    private static final String CREATE_TABLE_CLIENT_ROUTINES = "CREATE TABLE " + TABLE_CLIENT_ROUTINES + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_CR_CLIENT_EMAIL + " TEXT,"
+            + KEY_CR_ROUTINE_ID + " INTEGER,"
+            + KEY_CR_ASSIGNED_DATE + " TEXT,"
+            + "UNIQUE(" + KEY_CR_CLIENT_EMAIL + ", " + KEY_CR_ROUTINE_ID + ")" + ")";
     private static final String CREATE_TABLE_LOGS = "CREATE TABLE " + TABLE_LOGS + "("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + KEY_LOG_TYPE + " TEXT,"
@@ -137,6 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_GOALS);
         db.execSQL(CREATE_TABLE_SESSIONS);
         db.execSQL(CREATE_TABLE_TRAINER_PROFILES);
+        db.execSQL(CREATE_TABLE_CLIENT_ROUTINES);
 
         // Administrador
         db.execSQL("INSERT INTO " + TABLE_USERS + " (" +
@@ -175,6 +192,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.execSQL(CREATE_TABLE_TRAINER_PROFILES);
             } catch (Exception e) {
             }
+        }
+        if (oldVersion < 6) {
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_ROUTINES + " ADD COLUMN " + KEY_ROUTINE_TRAINER_EMAIL + " TEXT");
+            } catch (Exception e) { }
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_ROUTINES + " ADD COLUMN " + KEY_ROUTINE_EXERCISE_COUNT + " INTEGER DEFAULT 0");
+            } catch (Exception e) { }
+            try {
+                db.execSQL("ALTER TABLE " + TABLE_ROUTINES + " ADD COLUMN " + KEY_ROUTINE_DURATION_MIN + " INTEGER DEFAULT 0");
+            } catch (Exception e) { }
+            try {
+                db.execSQL(CREATE_TABLE_CLIENT_ROUTINES);
+            } catch (Exception e) { }
         }
     }
 
@@ -619,5 +650,100 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insertWithOnConflict(TABLE_TRAINER_PROFILES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
         return id;
+    }
+
+    public long createRoutine(String name, String description, String trainerEmail, int exerciseCount, int durationMin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ROUTINE_NAME, name);
+        values.put(KEY_ROUTINE_DESC, description);
+        values.put(KEY_ROUTINE_TRAINER_EMAIL, trainerEmail);
+        values.put(KEY_ROUTINE_EXERCISE_COUNT, exerciseCount);
+        values.put(KEY_ROUTINE_DURATION_MIN, durationMin);
+        long id = db.insert(TABLE_ROUTINES, null, values);
+        db.close();
+        return id;
+    }
+
+    public android.database.Cursor getRoutinesByTrainer(String trainerEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(TABLE_ROUTINES, null,
+                KEY_ROUTINE_TRAINER_EMAIL + "=?",
+                new String[]{ trainerEmail },
+                null, null, KEY_ROUTINE_NAME + " ASC");
+    }
+
+    public int deleteRoutine(long routineId, String trainerEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rows = db.delete(TABLE_ROUTINES,
+                KEY_ID + "=? AND " + KEY_ROUTINE_TRAINER_EMAIL + "=?",
+                new String[]{ String.valueOf(routineId), trainerEmail });
+        if (rows > 0) {
+            db.delete(TABLE_CLIENT_ROUTINES, KEY_CR_ROUTINE_ID + "=?",
+                    new String[]{ String.valueOf(routineId) });
+        }
+        db.close();
+        return rows;
+    }
+
+    public int countClientsUsingRoutine(long routineId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        android.database.Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_CLIENT_ROUTINES + " WHERE " + KEY_CR_ROUTINE_ID + "=?",
+                new String[]{ String.valueOf(routineId) });
+        int count = 0;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) count = cursor.getInt(0);
+            cursor.close();
+        }
+        db.close();
+        return count;
+    }
+
+    public long assignRoutineToClient(String clientEmail, long routineId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_CR_CLIENT_EMAIL, clientEmail);
+        values.put(KEY_CR_ROUTINE_ID, routineId);
+        values.put(KEY_CR_ASSIGNED_DATE,
+                new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                        .format(new java.util.Date()));
+        long id = db.insertWithOnConflict(TABLE_CLIENT_ROUTINES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
+        return id;
+    }
+
+    public void removeRoutineFromClient(String clientEmail, long routineId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CLIENT_ROUTINES,
+                KEY_CR_CLIENT_EMAIL + "=? AND " + KEY_CR_ROUTINE_ID + "=?",
+                new String[]{ clientEmail, String.valueOf(routineId) });
+        db.close();
+    }
+
+    public android.database.Cursor getRoutinesForClient(String clientEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT r.*, cr." + KEY_CR_ASSIGNED_DATE +
+                " FROM " + TABLE_ROUTINES + " r" +
+                " INNER JOIN " + TABLE_CLIENT_ROUTINES + " cr ON r." + KEY_ID + " = cr." + KEY_CR_ROUTINE_ID +
+                " WHERE cr." + KEY_CR_CLIENT_EMAIL + "=?" +
+                " ORDER BY r." + KEY_ROUTINE_NAME + " ASC";
+        return db.rawQuery(query, new String[]{ clientEmail });
+    }
+
+    public String getClientAssignedRoutineNames(String clientEmail) {
+        android.database.Cursor cursor = getRoutinesForClient(clientEmail);
+        StringBuilder sb = new StringBuilder();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int idx = cursor.getColumnIndex(KEY_ROUTINE_NAME);
+                if (idx != -1) {
+                    if (sb.length() > 0) sb.append(", ");
+                    sb.append(cursor.getString(idx));
+                }
+            }
+            cursor.close();
+        }
+        return sb.length() > 0 ? sb.toString() : null;
     }
 }

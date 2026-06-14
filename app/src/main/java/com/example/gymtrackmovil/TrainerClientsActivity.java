@@ -98,10 +98,12 @@ public class TrainerClientsActivity extends AppCompatActivity {
                 String clientName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_USER_NAME));
 
                 int goalIdx = cursor.getColumnIndex(DatabaseHelper.KEY_USER_GOAL);
-                String plan = goalIdx != -1 ? cursor.getString(goalIdx) : null;
-                if (plan == null || plan.trim().isEmpty()) {
-                    plan = "Sin plan asignado";
-                }
+                String goalText = goalIdx != -1 ? cursor.getString(goalIdx) : null;
+
+                String assignedRoutines = dbHelper.getClientAssignedRoutineNames(email);
+                String plan = assignedRoutines != null
+                        ? assignedRoutines
+                        : (goalText != null && !goalText.trim().isEmpty() ? goalText : "Sin rutina asignada");
 
                 int progress = computeAverageProgress(email);
                 String lastSession = computeLastSessionLabel(email);
@@ -151,7 +153,7 @@ public class TrainerClientsActivity extends AppCompatActivity {
 
                 llClientList.addView(cardView);
 
-                cardView.setOnClickListener(v -> showScheduleSessionDialog(client));
+                cardView.setOnClickListener(v -> showClientOptionsDialog(client));
             }
         }
 
@@ -305,6 +307,79 @@ public class TrainerClientsActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
+    }
+
+    private void showClientOptionsDialog(TrainerClientsAdapter.Client client) {
+        String[] options = { "Programar Sesión", "Asignar Rutina" };
+
+        new android.app.AlertDialog.Builder(this)
+                .setTitle(client.name)
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showScheduleSessionDialog(client);
+                    } else {
+                        showAssignRoutineDialog(client);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void showAssignRoutineDialog(TrainerClientsAdapter.Client client) {
+        Cursor cursor = dbHelper.getRoutinesByTrainer(trainerEmail);
+
+        List<String> names = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                long rid = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ID));
+                String rname = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.KEY_ROUTINE_NAME));
+                int exIdx = cursor.getColumnIndex(DatabaseHelper.KEY_ROUTINE_EXERCISE_COUNT);
+                int durIdx = cursor.getColumnIndex(DatabaseHelper.KEY_ROUTINE_DURATION_MIN);
+                int ex = exIdx != -1 ? cursor.getInt(exIdx) : 0;
+                int dur = durIdx != -1 ? cursor.getInt(durIdx) : 0;
+                names.add(rname + "  (" + ex + " ej. · " + dur + " min)");
+                ids.add(rid);
+            }
+            cursor.close();
+        }
+
+        if (names.isEmpty()) {
+            Toast.makeText(this, "Aún no has creado rutinas. Créalas en la sección Rutinas.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_assign_routine, null);
+        ((TextView) dialogView.findViewById(R.id.tvAssignRoutineClient))
+                .setText("Rutina para " + client.name + ":");
+
+        ListView listView = dialogView.findViewById(R.id.lvRoutinesToAssign);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_simple_list_white, names);
+        listView.setAdapter(adapter);
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(this)
+                .setTitle("Asignar Rutina")
+                .setView(dialogView)
+                .setNegativeButton("Cancelar", null)
+                .create();
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            long selectedRoutineId = ids.get(position);
+            String selectedName = names.get(position).split("  \\(")[0];
+            long result = dbHelper.assignRoutineToClient(client.email, selectedRoutineId);
+            if (result > 0) {
+                Toast.makeText(this, "Rutina \"" + selectedName + "\" asignada a " + client.name,
+                        Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                EditText etSearch = findViewById(R.id.etSearchClient);
+                renderClientList(etSearch.getText().toString());
+            } else {
+                Toast.makeText(this, "Error al asignar la rutina", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
     }
 
     private void setupBottomNav() {
