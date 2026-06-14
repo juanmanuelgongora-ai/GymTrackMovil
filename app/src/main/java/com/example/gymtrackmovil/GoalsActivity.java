@@ -24,7 +24,7 @@ public class GoalsActivity extends AppCompatActivity {
     private androidx.recyclerview.widget.RecyclerView rvGoals;
     private com.example.gymtrackmovil.adapters.GoalsAdapter goalsAdapter;
     private android.widget.ProgressBar pbGeneralProgress;
-    private ApiService apiService;
+    private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class GoalsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_goals);
 
         session = new SessionManager(this);
-        apiService = ApiClient.getClient(this).create(ApiService.class);
+        dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         tvUserInitials = findViewById(R.id.tvUserInitials);
 
         tvGeneralProgressPercent = findViewById(R.id.cardGeneralProgress).findViewById(R.id.tvGeneralProgressPercent);
@@ -80,32 +80,51 @@ public class GoalsActivity extends AppCompatActivity {
     }
 
     private void fetchGoals() {
-        apiService.getGoals().enqueue(new Callback<List<Goal>>() {
-            @Override
-            public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Goal> goals = response.body();
-                    goalsAdapter = new com.example.gymtrackmovil.adapters.GoalsAdapter(goals);
-                    rvGoals.setAdapter(goalsAdapter);
+        String email = session.getUserEmail();
 
-                    // Update General Progress
-                    if (!goals.isEmpty()) {
-                        int totalProgress = 0;
-                        for (Goal g : goals) {
-                            totalProgress += g.getProgress();
-                        }
-                        int avg = totalProgress / goals.size();
-                        tvGeneralProgressPercent.setText(avg + "%");
-                        pbGeneralProgress.setProgress(avg);
-                    }
-                }
-            }
+        android.database.Cursor check = dbHelper.getUserGoals(email);
+        boolean hasGoals = (check != null && check.getCount() > 0);
+        if (check != null) check.close();
 
-            @Override
-            public void onFailure(Call<List<Goal>> call, Throwable t) {
-                Toast.makeText(GoalsActivity.this, "Error al cargar objetivos", Toast.LENGTH_SHORT).show();
+        if (!hasGoals) {
+            dbHelper.saveGoal(email, "Perder Peso Corporal", "Bajar a 80kg", 60, "2026-12-31");
+            dbHelper.saveGoal(email, "Ganar Masa Muscular", "Aumentar 5kg de músculo", 40, "2026-12-31");
+            dbHelper.saveGoal(email, "Resistencia Cardiovascular", "Correr 10k sin parar", 80, "2026-09-30");
+        }
+
+        List<Goal> goals = new java.util.ArrayList<>();
+        android.database.Cursor cursor = dbHelper.getUserGoals(email);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int tIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_TITLE);
+                int taIdx = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_TARGET);
+                int pIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_PROGRESS);
+                int dIdx  = cursor.getColumnIndex(com.example.gymtrackmovil.database.DatabaseHelper.KEY_GOAL_DEADLINE);
+                goals.add(new Goal(
+                        tIdx  != -1 ? cursor.getString(tIdx)  : "",
+                        taIdx != -1 ? cursor.getString(taIdx) : "",
+                        pIdx  != -1 ? cursor.getInt(pIdx)     : 0,
+                        dIdx  != -1 ? cursor.getString(dIdx)  : ""
+                ));
             }
-        });
+            cursor.close();
+        }
+
+        goalsAdapter = new com.example.gymtrackmovil.adapters.GoalsAdapter(goals);
+        rvGoals.setAdapter(goalsAdapter);
+
+        if (!goals.isEmpty()) {
+            int totalProgress = 0;
+            for (Goal g : goals) {
+                totalProgress += g.getProgress();
+            }
+            int avg = totalProgress / goals.size();
+            tvGeneralProgressPercent.setText(avg + "%");
+            pbGeneralProgress.setProgress(avg);
+        } else {
+            tvGeneralProgressPercent.setText("0%");
+            pbGeneralProgress.setProgress(0);
+        }
     }
 
     private void showAddGoalDialog() {
@@ -129,27 +148,13 @@ public class GoalsActivity extends AppCompatActivity {
     }
 
     private void saveGoal(Goal goal) {
-        apiService.addGoal(goal).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(GoalsActivity.this, "Objetivo creado", Toast.LENGTH_SHORT).show();
-                    fetchGoals();
-                } else {
-                    String msg = "Error: " + response.code();
-                    try {
-                        if (response.errorBody() != null)
-                            msg += " " + response.errorBody().string();
-                    } catch (Exception e) {
-                    }
-                    Toast.makeText(GoalsActivity.this, msg, Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(GoalsActivity.this, "Falla red: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        String email = session.getUserEmail();
+        long id = dbHelper.saveGoal(email, goal.getTitle(), goal.getTarget(), goal.getProgress(), goal.getDeadline());
+        if (id != -1) {
+            Toast.makeText(GoalsActivity.this, "Objetivo creado", Toast.LENGTH_SHORT).show();
+            fetchGoals();
+        } else {
+            Toast.makeText(GoalsActivity.this, "Error al crear objetivo en SQLite", Toast.LENGTH_SHORT).show();
+        }
     }
 }

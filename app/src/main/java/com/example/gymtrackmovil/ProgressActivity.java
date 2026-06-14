@@ -22,7 +22,7 @@ public class ProgressActivity extends AppCompatActivity {
 
     private SessionManager session;
     private TextView tvUserInitials;
-    private ApiService apiService;
+    private com.example.gymtrackmovil.database.DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class ProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_progress);
 
         session = new SessionManager(this);
-        apiService = ApiClient.getClient(this).create(ApiService.class);
+        dbHelper = new com.example.gymtrackmovil.database.DatabaseHelper(this);
         tvUserInitials = findViewById(R.id.tvUserInitials);
 
         setupUI();
@@ -72,36 +72,40 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void fetchProgressData() {
-        apiService.getProgress().enqueue(new Callback<List<ProgressEntry>>() {
-            @Override
-            public void onResponse(Call<List<ProgressEntry>> call, Response<List<ProgressEntry>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateProgressUI(response.body());
-                }
-            }
+        List<ProgressEntry> progressList = new java.util.ArrayList<>();
+        String email = session.getUserEmail();
+        android.database.Cursor cursor = dbHelper.getUserMetrics(email);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int wIdx = cursor.getColumnIndex("weight");
+                int fIdx = cursor.getColumnIndex("body_fat");
+                int mIdx = cursor.getColumnIndex("muscle_mass");
+                int dIdx = cursor.getColumnIndex("date");
 
-            @Override
-            public void onFailure(Call<List<ProgressEntry>> call, Throwable t) {
-                Toast.makeText(ProgressActivity.this, "Error al cargar progreso", Toast.LENGTH_SHORT).show();
+                double weight = wIdx != -1 ? cursor.getDouble(wIdx) : 0;
+                double fat = fIdx != -1 ? cursor.getDouble(fIdx) : 0;
+                double muscle = mIdx != -1 ? cursor.getDouble(mIdx) : 0;
+                String date = dIdx != -1 ? cursor.getString(dIdx) : "";
+
+                progressList.add(new ProgressEntry(weight, 170.0, fat, muscle, date));
             }
-        });
+            cursor.close();
+        }
+        updateProgressUI(progressList);
     }
 
     private void updateProgressUI(List<ProgressEntry> progressList) {
         if (progressList.isEmpty())
             return;
 
-        // Assuming list is sorted by date descending, get latest
         ProgressEntry latest = progressList.get(0);
 
-        // Update Weight Card
         View cardWeight = findViewById(R.id.cardWeight);
         ((TextView) cardWeight.findViewById(R.id.tvStatLabel)).setText("Peso (kg)");
         ((TextView) cardWeight.findViewById(R.id.tvStatValue)).setText(String.format("%.1f", latest.getWeight()));
         ((android.widget.ImageView) cardWeight.findViewById(R.id.ivStatIcon))
                 .setImageResource(android.R.drawable.ic_menu_sort_by_size);
 
-        // Update BMI Card
         View cardBMI = findViewById(R.id.cardBMI);
         ((TextView) cardBMI.findViewById(R.id.tvStatLabel)).setText("IMC");
         double h = latest.getHeight() > 0 ? latest.getHeight() / 100.0 : 1.70;
@@ -110,14 +114,12 @@ public class ProgressActivity extends AppCompatActivity {
         ((android.widget.ImageView) cardBMI.findViewById(R.id.ivStatIcon))
                 .setImageResource(android.R.drawable.ic_menu_info_details);
 
-        // Update Fat Card
         View cardFat = findViewById(R.id.cardFat);
         ((TextView) cardFat.findViewById(R.id.tvStatLabel)).setText("Grasa Body (%)");
         ((TextView) cardFat.findViewById(R.id.tvStatValue)).setText(String.format("%.1f%%", latest.getBodyFat()));
         ((android.widget.ImageView) cardFat.findViewById(R.id.ivStatIcon))
                 .setImageResource(android.R.drawable.ic_menu_view);
 
-        // Update Muscle Card
         View cardMuscle = findViewById(R.id.cardMuscle);
         ((TextView) cardMuscle.findViewById(R.id.tvStatLabel)).setText("Músculo (%)");
         ((TextView) cardMuscle.findViewById(R.id.tvStatValue)).setText(String.format("%.1f%%", latest.getMuscleMass()));
@@ -154,21 +156,13 @@ public class ProgressActivity extends AppCompatActivity {
     }
 
     private void saveProgress(ProgressEntry entry) {
-        apiService.addProgress(entry).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(ProgressActivity.this, "Medición guardada", Toast.LENGTH_SHORT).show();
-                    fetchProgressData();
-                } else {
-                    Toast.makeText(ProgressActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(ProgressActivity.this, "Error de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        String email = session.getUserEmail();
+        long id = dbHelper.saveMetric(email, entry.getWeight(), entry.getBodyFat(), entry.getMuscleMass(), entry.getDate());
+        if (id != -1) {
+            Toast.makeText(ProgressActivity.this, "Medición guardada", Toast.LENGTH_SHORT).show();
+            fetchProgressData();
+        } else {
+            Toast.makeText(ProgressActivity.this, "Error al guardar medición en SQLite", Toast.LENGTH_SHORT).show();
+        }
     }
 }
