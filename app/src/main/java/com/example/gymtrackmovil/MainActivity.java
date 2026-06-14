@@ -2,14 +2,22 @@ package com.example.gymtrackmovil;
 
 import android.os.Bundle;
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.gymtrackmovil.utils.Logger;
 import android.widget.TextView;
+import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
+import com.example.gymtrackmovil.api.QuoteApiClient;
+import com.example.gymtrackmovil.api.QuoteApiService;
+import com.example.gymtrackmovil.models.QuoteResponse;
+import com.example.gymtrackmovil.utils.Logger;
 import com.example.gymtrackmovil.utils.SessionManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private SessionManager session;
     private TextView tvUserInitials, tvWelcomeHeader;
+    private TextView tvQuoteText, tvQuoteAuthor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,17 +25,46 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Logger.init(this);
         session = new SessionManager(this);
+
         tvUserInitials = findViewById(R.id.tvUserInitials);
         tvWelcomeHeader = findViewById(R.id.tvWelcomeHeader);
+        tvQuoteText = findViewById(R.id.tvQuoteText);
+        tvQuoteAuthor = findViewById(R.id.tvQuoteAuthor);
+
         updateDynamicUI();
-        findViewById(R.id.navHome).setOnClickListener(v -> {
-        });
+        loadMotivationalQuote();
+
+        findViewById(R.id.navHome).setOnClickListener(v -> {});
         findViewById(R.id.navRoutine).setOnClickListener(v -> startActivity(new Intent(this, RoutinesActivity.class)));
         findViewById(R.id.navProgress).setOnClickListener(v -> startActivity(new Intent(this, ProgressActivity.class)));
         findViewById(R.id.navGoals).setOnClickListener(v -> startActivity(new Intent(this, GoalsActivity.class)));
         findViewById(R.id.navProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         tvUserInitials.setOnClickListener(v -> showLogoutConfirmDialog());
+    }
 
+    private void loadMotivationalQuote() {
+        QuoteApiService api = QuoteApiClient.getClient().create(QuoteApiService.class);
+        api.getRandomQuote().enqueue(new Callback<QuoteResponse>() {
+            @Override
+            public void onResponse(Call<QuoteResponse> call, Response<QuoteResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    QuoteResponse quote = response.body();
+                    runOnUiThread(() -> {
+                        tvQuoteText.setText("\"" + quote.getQuote() + "\"");
+                        tvQuoteAuthor.setText("— " + quote.getAuthor());
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuoteResponse> call, Throwable t) {
+                Log.e("MainActivity", "Error al obtener frase: " + t.getMessage());
+                runOnUiThread(() -> {
+                    tvQuoteText.setText("\"El éxito es la suma de pequeños esfuerzos repetidos día tras día.\"");
+                    tvQuoteAuthor.setText("— Robert Collier");
+                });
+            }
+        });
     }
 
     private void updateDynamicUI() {

@@ -57,8 +57,6 @@ public class GoalsActivity extends AppCompatActivity {
             tvUserInitials.setText(name.substring(0, Math.min(name.length(), 2)).toUpperCase());
         }
 
-        findViewById(R.id.ivBack).setOnClickListener(v -> finish());
-
         // Navigation
         findViewById(R.id.navHome).setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));

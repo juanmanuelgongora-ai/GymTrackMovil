@@ -3,167 +3,352 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background"
-    android:padding="24dp">
-    <TextView
-        android:id="@+id/tvProfileTitle"
-        android:layout_width="wrap_content"
+    android:background="#0A0A0A">
+
+    <!-- Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tu Perfil"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clLogoArea"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvLogoIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_client_card"
+                android:gravity="center"
+                android:text="🔥"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvLogoIcon"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GYM TRACK"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Panel Usuario"
+                    android:textColor="#A0A0A0"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvUserInitials"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_avatar_gradient"
+            android:gravity="center"
+            android:text="JM"
+            android:textColor="#0A0A0A"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/vHeaderDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A1A1A"
+        app:layout_constraintTop_toBottomOf="@id/clHeader" />
+
+    <!-- Scroll con formulario -->
     <ScrollView
+        android:id="@+id/scrollContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSaveProfile"
-        app:layout_constraintTop_toBottomOf="@id/tvProfileTitle">
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/llBottomNav"
+        app:layout_constraintTop_toBottomOf="@id/vHeaderDivider">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvProfileTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tu Perfil"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Nombre"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
+                android:textColor="#A0A0A0"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
             <EditText
                 android:id="@+id/etProfileName"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_bg"
                 android:hint="Nombre"
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="@color/white" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="Apellido"
-                android:textColor="@color/text_secondary"
+                android:textColor="#A0A0A0"
                 android:textSize="12sp" />
             <EditText
                 android:id="@+id/etProfileLastName"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_bg"
                 android:hint="Apellido"
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="@color/white" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="Email (Solo lectura)"
-                android:textColor="@color/text_secondary"
+                android:textColor="#A0A0A0"
                 android:textSize="12sp" />
             <EditText
                 android:id="@+id/etProfileEmail"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_bg"
                 android:enabled="false"
                 android:hint="Email"
                 android:padding="16dp"
-                android:textColor="@color/text_secondary" />
+                android:textColor="#A0A0A0" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="Teléfono"
-                android:textColor="@color/text_secondary"
+                android:textColor="#A0A0A0"
                 android:textSize="12sp" />
             <EditText
                 android:id="@+id/etProfilePhone"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_bg"
                 android:hint="Teléfono"
                 android:inputType="phone"
                 android:padding="16dp"
                 android:textColor="@color/white" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
                 android:text="Dirección"
-                android:textColor="@color/text_secondary"
+                android:textColor="#A0A0A0"
                 android:textSize="12sp" />
             <EditText
                 android:id="@+id/etProfileAddress"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="4dp"
                 android:background="@drawable/edittext_bg"
                 android:hint="Dirección"
                 android:inputType="textPostalAddress"
                 android:padding="16dp"
                 android:textColor="@color/white" />
+
+            <!-- Guardar cambios -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/edittext_bg"
+                android:backgroundTint="#FF6B35"
+                android:text="Guardar Cambios"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <!-- Cerrar sesión -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
                 android:background="@drawable/edittext_bg"
                 android:text="Cerrar Sesión"
                 android:textAllCaps="false"
                 android:textColor="#FF4444"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </ScrollView>
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSaveProfile"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/btn_gradient"
-        android:text="Guardar Cambios"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav" />
+
+    <!-- Bottom Navigation -->
     <LinearLayout
-        android:id="@+id/bottomNav"
+        android:id="@+id/llBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@color/black"
-        android:elevation="8dp"
+        android:layout_height="72dp"
+        android:background="#0A0A0A"
         android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-        <LinearLayout android:id="@+id/navHome" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_today" android:tint="@color/text_secondary"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Inicio" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+        android:paddingStart="4dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_today"
+                android:tint="#A0A0A0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Inicio"
+                android:textColor="#A0A0A0"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-        <LinearLayout android:id="@+id/navRoutine" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_sort_by_size" android:tint="@color/text_secondary"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rutina" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+
+        <LinearLayout
+            android:id="@+id/navRoutine"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_dumbbell"
+                android:tint="#A0A0A0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Rutina"
+                android:textColor="#A0A0A0"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-        <LinearLayout android:id="@+id/navProgress" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_directions" android:tint="@color/text_secondary"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Progreso" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+
+        <LinearLayout
+            android:id="@+id/navProgress"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_goals"
+                android:tint="#A0A0A0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Progreso"
+                android:textColor="#A0A0A0"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-        <LinearLayout android:id="@+id/navGoals" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_myplaces" android:tint="@color/text_secondary"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Objetivos" android:textColor="@color/text_secondary" android:textSize="10sp"/>
+
+        <LinearLayout
+            android:id="@+id/navGoals"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:tint="#A0A0A0" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Objetivos"
+                android:textColor="#A0A0A0"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
-        <LinearLayout android:id="@+id/navProfile" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@android:drawable/ic_menu_edit" android:tint="@color/orange_primary"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Perfil" android:textColor="@color/orange_primary" android:textSize="10sp"/>
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_nav_trainer_active"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_profile"
+                android:tint="#FF6B35" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Perfil"
+                android:textColor="#FF6B35"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+</androidx.constraintlayout.widget.ConstraintLayout>
