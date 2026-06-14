@@ -1,0 +1,42 @@
+GYMTRACK MÓVIL - CREDENCIALES DE ACCESO
+
+Este documento contiene los usuarios fijos preconfigurados (seeding) en
+la base de datos local del proyecto. Estas credenciales permiten acceder,
+visualizar y realizar pruebas de creación/edición en todos los módulos
+de la aplicación directamente desde el entorno de Android Studio.
+
+La aplicación cuenta con un sistema de control de acceso basado en roles
+(RBAC). A continuación, se detallan los accesos según el perfil:
+
+------------------------------------------------------------------------
+1. PERFIL: ADMINISTRADOR
+------------------------------------------------------------------------
+* Descripción:   Acceso total al sistema, gestión de usuarios, reportes
+y configuración global.
+* Correo:        admin@gymtrack.com
+* Contraseña:    admin123
+* Rol asignado:  admin
+
+------------------------------------------------------------------------
+2. PERFIL: ENTRENADOR
+------------------------------------------------------------------------
+* Descripción:   Acceso enfocado en la creación de rutinas, asignación
+de planes y seguimiento de rendimiento físico.
+* Correo:        entrenador@gymtrack.com
+* Contraseña:    entrenador123
+* Rol asignado:  entrenador
+
+------------------------------------------------------------------------
+3. PERFIL: CLIENTE (Prueba)
+------------------------------------------------------------------------
+* Descripción:   Perfil de usuario final. Permite visualizar rutinas,
+marcar asistencias e interactuar con la interfaz del atleta.
+* Correo:        cliente@gymtrack.com
+* Contraseña:    cliente123
+* Rol asignado:  cliente
+
+NOTA PARA DESARROLLADORES / EVALUADORES:
+Estas cuentas son estáticas y se inicializan de forma automática en la
+estructura SQLite durante la creación de la base de datos para facilitar
+el flujo de testing en emuladores o dispositivos físicos.
+
